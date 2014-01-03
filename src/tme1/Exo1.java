@@ -60,8 +60,7 @@ public class Exo1{
             }
         }
 
-        store = KVStoreFactory.getStore
-            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
+        store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
 
     private void usage(String message) {
