@@ -1,7 +1,7 @@
 package tme1;
 
 import oracle.kv.*;
-import oracle.kv.stats.*;
+//import oracle.kv.stats.*;
 
 /**
  * TME avec KVStore : Init
@@ -59,7 +59,6 @@ public class Exo1{
                 usage("Unknown argument: " + thisArg);
             }
         }
-
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
 
