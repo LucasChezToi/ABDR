@@ -1,5 +1,6 @@
 package projet;
 
+
 import oracle.kv.*;
 import oracle.kv.stats.*;
 
@@ -60,8 +61,8 @@ public class Charge1{
             }
         }
 
-        store = KVStoreFactory.getStore
-            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
+        String[] st = {hostName + ":" + hostPort};
+        store = KVStoreFactory.getStore(new KVStoreConfig(storeName, st));
     }
 
     private void usage(String message) {

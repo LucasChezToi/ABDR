@@ -23,8 +23,8 @@ public class Transaction {
 
   public void commit(List<Key> keyList) {
     OperationFactory factory = store.getOperationFactory();
-    List<Operation> operations = new ArrayList<>(5);
-    List<Version> versions = new ArrayList<>(5);
+    List<Operation> operations = new ArrayList<>();
+    List<Version> versions = new ArrayList<>();
     Value val = getMax(keyList, versions);
     for (int i = 0; i < 5; i++) {
       Operation operation = factory.createPutIfVersion(keyList.get(i), val, versions.get(i), Choice.NONE, true);

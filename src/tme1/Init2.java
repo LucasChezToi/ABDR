@@ -60,9 +60,7 @@ public class Init2{
                 usage("Unknown argument: " + thisArg);
             }
         }
-
-        store = KVStoreFactory.getStore
-            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
+        store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
 
     private void usage(String message) {

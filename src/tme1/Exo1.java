@@ -1,7 +1,7 @@
 package tme1;
 
 import oracle.kv.*;
-//import oracle.kv.stats.*;
+import oracle.kv.stats.*;
 
 /**
  * TME avec KVStore : Init
@@ -61,7 +61,7 @@ public class Exo1{
         }
         store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
-
+    
     private void usage(String message) {
         System.out.println("\n" + message + "\n");
         System.out.println("usage: " + getClass().getName());
