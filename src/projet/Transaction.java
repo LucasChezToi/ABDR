@@ -2,6 +2,7 @@ package projet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import oracle.kv.KVStore;
 import oracle.kv.Key;
@@ -23,16 +24,21 @@ public class Transaction {
 
   public void commit(List<Key> keyList) {
     OperationFactory factory = store.getOperationFactory();
-    List<Operation> operations = new ArrayList<>();
-    List<Version> versions = new ArrayList<>();
-    Value val = getMax(keyList, versions);
+    List<Operation> operations = new ArrayList<Operation>();
+    Version version;
+    
+    Value val = Value.createValue(("0").getBytes());
+    Key key;
+    //= getMax(keyList, versions);
     for (int i = 0; i < 5; i++) {
-      Operation operation = factory.createPutIfVersion(keyList.get(i), val, versions.get(i), Choice.NONE, true);
-      operations.add(operation);
+    	key = keyList.get(i);
+    	version = new Version(UUID.randomUUID(), i);
+    	operations.add(factory.createPutIfVersion(key, val, version, Choice.NONE, true));
     }
     try {
       store.execute(operations);
     } catch (OperationExecutionException e) {
+    	System.out.println(e);
       commit(keyList);
     }
   }

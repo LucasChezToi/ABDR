@@ -1,6 +1,9 @@
 package projet;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import oracle.kv.*;
 import oracle.kv.stats.*;
 
@@ -14,14 +17,14 @@ public class Charge1{
     /**
      * Runs Init
      */
-    public static void main(String args[]) {
-        try {
-        	Charge1 a = new Charge1(args);
-            a.go();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String args[]) {
+//        try {
+//        	Charge1 a = new Charge1(args);
+//            a.go();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Parses command line args and opens the KVStore.
@@ -75,9 +78,11 @@ public class Charge1{
     }
     
     void a1() throws Exception {
-        for(int i=0;i<1000;i++){
-            String key = "produit1";
-            Key k = Key.createKey(key);
+    	String key = "Objets";
+	    String cat = "Profil";
+    	for(int i=0;i<10;i++){
+           
+            Key k = Key.createKey(key+"1");
             Version matchVersion;
             Version version = null;
             ValueVersion valVer;
@@ -107,9 +112,7 @@ public class Charge1{
      * Initialisation
      */
     void go() throws Exception {
-        System.out.println("Initialisation...");
-
-	     
+        System.out.println("Charge1...");
         a1();
         store.close();
     }
