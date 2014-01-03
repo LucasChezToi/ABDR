@@ -1,4 +1,4 @@
-package tme1;
+package TME1;
 
 import oracle.kv.*;
 import oracle.kv.stats.*;
@@ -59,9 +59,11 @@ public class Exo1{
                 usage("Unknown argument: " + thisArg);
             }
         }
-        store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
+
+        store = KVStoreFactory.getStore
+            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
-    
+
     private void usage(String message) {
         System.out.println("\n" + message + "\n");
         System.out.println("usage: " + getClass().getName());

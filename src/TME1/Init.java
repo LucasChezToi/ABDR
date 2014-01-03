@@ -1,4 +1,4 @@
-package tme1;
+package TME1;
 
 import oracle.kv.*;
 import oracle.kv.stats.*;
@@ -59,7 +59,9 @@ public class Init{
                 usage("Unknown argument: " + thisArg);
             }
         }
-        store = KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort));
+
+        store = KVStoreFactory.getStore
+            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
     }
 
     private void usage(String message) {
