@@ -11,7 +11,7 @@ public class IncrementalThread extends Thread{
         	if(version.equals("E.1")){
         		Etape1 etape1 = new Etape1(null);
         		try {
-        			etape1.a3();
+        			etape1.a();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
