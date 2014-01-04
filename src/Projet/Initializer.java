@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oracle.kv.Key;
+import oracle.kv.Operation;
+import oracle.kv.OperationExecutionException;
+import oracle.kv.OperationFactory;
 import oracle.kv.Value;
+import oracle.kv.ReturnValueVersion.Choice;
 
 
 /**
@@ -48,23 +52,35 @@ public class Initializer extends StoreConfig{
 		System.out.println("Initialisation...");
 		int oi, pi,atti;
 		List<Key> key = new ArrayList<Key>();
-		List<String> minorPath = new ArrayList<String>();
-
+		List<String> majorPath = new ArrayList<String>();
+		List<Operation> operations = new ArrayList<Operation>();
+		OperationFactory factory = store.getOperationFactory();
+		Operation operation;
 		for (pi= 1; pi<100; pi++){
 
 			for (oi = 1; oi< 21; oi++){
-
+				operations.clear();
+				for(atti=1; atti<6; atti++){
+					majorPath.clear();
+					majorPath.add("Profil"+pi);
+					majorPath.add("Objets"+oi);
+					//minorPath.add("attrInt"+atti);
+					operation = factory.createPut(Key.createKey(majorPath,"attrInt"+atti), Value.createValue((""+atti).getBytes()));
+					operations.add(operation);
+				}	
+				
 				for(atti=1;atti<6;atti++){
-					minorPath.clear();
-					minorPath.add("Objets"+oi);
-					minorPath.add("attrInt"+atti);
-					store.put(Key.createKey("Profil"+pi,minorPath), Value.createValue("0".getBytes()));
+					majorPath.clear();
+					majorPath.add("Profil"+pi);
+					majorPath.add("Objets"+oi);
+					//majorPath.add("attrChar"+atti);
+					operation = factory.createPut(Key.createKey(majorPath,"attrChar"+atti), Value.createValue(("char"+atti).getBytes()));
+					operations.add(operation);
 				}
-				for(atti=1;atti<6;atti++){
-					minorPath.clear();
-					minorPath.add("Objets"+oi);
-					minorPath.add("attrChar"+atti);
-					store.put(Key.createKey("Profil"+pi,minorPath), Value.createValue("texte0".getBytes()));
+				try{
+					store.execute(operations);
+				}catch (OperationExecutionException e){
+					initE1();
 				}
 			}
 		}

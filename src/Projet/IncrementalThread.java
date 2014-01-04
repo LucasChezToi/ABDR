@@ -9,7 +9,7 @@ public class IncrementalThread extends Thread{
 
         public void run() {
         	if(version.equals("E.1")){
-        		Etape1 etape1 = new Etape1(null);
+        		Display etape1 = new Display(null);
         		try {
         			etape1.a();
 				} catch (Exception e) {

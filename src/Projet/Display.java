@@ -14,12 +14,12 @@ import oracle.kv.Version;
 /**
  * TME avec KVStore : Init
  */
-public class Etape1 extends StoreConfig{
+public class Display extends StoreConfig{
 
 	/**
 	 * Parses command line args and opens the KVStore.
 	 */
-	public Etape1(String[] argv) {
+	public Display(String[] argv) {
 		super(argv);
 	}
 
@@ -39,36 +39,36 @@ public class Etape1 extends StoreConfig{
 		List<Key> keys = new ArrayList<Key>();
 		List<Operation> operations = new ArrayList<Operation>();
 		List<Version> versions = new ArrayList<Version>();
-		List<String> minorPath = new ArrayList<String>();
+		List<String> majorPath = new ArrayList<String>();
 
 		for(oi=1;oi<21;oi++){
 			for(atti=1; atti<6; atti++){
-				minorPath.clear();
-				minorPath.add("Objets"+oi);
-				minorPath.add("attrInt"+atti);
-				Key k = Key.createKey("Profil1",minorPath);
+				majorPath.clear();
+				majorPath.add("Profil1");
+				majorPath.add("Objets"+oi);
+				//majorPath.add("attrChar"+atti);
+				Key k = Key.createKey(majorPath,"attrInt"+atti);
 				keys.add(k);
 				
 				value = new String(store.get(k).getValue().getValue());
 				valVer = store.get(keys.get(atti-1));
 				versions.add(valVer.getVersion());
 				
-				//System.out.println("Profil1->Objets"+oi+"->attrInt" + atti + " = "+value);
-				
-				valint = Integer.parseInt(value);
-				if(max < valint) max = valint;
+				System.out.println("Profil1->Objets"+oi+"->attrInt" + atti + " = "+value);
 			}
-			max++;
 			for(atti=1; atti<6; atti++){
-				System.out.println("new value Profil1->Objets"+oi+"->attrInt" + atti + " = "+ max);
-				operation = factory.createPutIfVersion(keys.get(atti-1), Value.createValue(Integer.toString(max).getBytes()), versions.get(atti-1), Choice.NONE, true);
-				System.out.println(operation);
-				operations.add(operation);
-			}
-			try{
-				store.execute(operations);
-			}catch (OperationExecutionException e){
-				aSlave(oi);
+				majorPath.clear();
+				majorPath.add("Profil1");
+				majorPath.add("Objets"+oi);
+				//majorPath.add("attrChar"+atti);
+				Key k = Key.createKey(majorPath,"attrChar"+atti);
+				keys.add(k);
+				
+				value = new String(store.get(k).getValue().getValue());
+				valVer = store.get(keys.get(atti-1));
+				versions.add(valVer.getVersion());
+				
+				System.out.println("Profil1->Objets"+oi+"->attrChar" + atti + " = "+value);
 			}
 			System.out.println("");
 		}
