@@ -1,1 +1,4 @@
-java -jar lib/kvStore.jar kvlite -root /tmp/kvroot
+
+
+java -jar lib/kvstore.jar kvlite -root /tmp/kvroot1 -store kvstore -port 5000 -admin 5001
+

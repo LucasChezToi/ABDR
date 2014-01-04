@@ -21,14 +21,17 @@ public class Transaction {
 		this.nbObjets = nbObjets;
 	}
 	
-	public int commit(){
+	
+	public int commit(int lastOi){
 		List<String> majorPath = new ArrayList<String>();
 		List<Operation> operations = new ArrayList<Operation>();
 		OperationFactory factory = store.getOperationFactory();
 		Operation operation;
+		Key k;
 		int atti,oi;
-		for (oi = 1; oi < nbObjets+1; oi++){
-			operations.clear();
+		System.out.println(profil);
+		for (oi = lastOi+1; oi < nbObjets+lastOi+1; oi++){
+			operations.clear();			
 			for(atti=1; atti<6; atti++){
 				majorPath.clear();
 				majorPath.add(profil);
@@ -47,7 +50,7 @@ public class Transaction {
 			try{
 				store.execute(operations);
 			}catch (OperationExecutionException e){
-				this.commit();
+				this.commit(lastOi);
 			}
 		}
 		
