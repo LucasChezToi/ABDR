@@ -17,23 +17,13 @@ public class Exo1 extends StoreConfig{
     void a1() throws Exception {
         for(int i=0;i<1000;i++){
             Key k = Key.createKey("p1");
-            Version matchVersion;
-            Version version = null;
-            ValueVersion valVer;
-            int val2;
-            String value;
-            do {
-                valVer = store.get(k);
-                value = new String(valVer.getValue().getValue());
-                matchVersion = valVer.getVersion();
-                System.out.println("value = "+value);
-                val2 = Integer.parseInt(value);
-                value = Integer.toString(++val2);
-                System.out.println("new value= "+value);
-            
-                version = store.putIfVersion(k, Value.createValue(value.getBytes()), matchVersion);
-            }while (version == null);
+            String value = new String(store.get(k).getValue().getValue());
+            System.out.println("value = "+value);
+            value = Integer.toString(Integer.parseInt(value)+1);
+            System.out.println("new value= "+value);
+            store.put(k, Value.createValue(value.getBytes()));
         }
+        store.close();
     }
 
     void a2() throws Exception {
@@ -42,29 +32,18 @@ public class Exo1 extends StoreConfig{
             Version matchVersion;
             Version version = null;
             ValueVersion valVer;
-            int val2;
             String value;
             do {
                 valVer = store.get(k);
                 value = new String(valVer.getValue().getValue());
                 matchVersion = valVer.getVersion();
                 System.out.println("value = "+value);
-                val2 = Integer.parseInt(value);
-                value = Integer.toString(++val2);
+                value = Integer.toString(Integer.parseInt(value)+1);
                 System.out.println("new value= "+value);
-            
                 version = store.putIfVersion(k, Value.createValue(value.getBytes()), matchVersion);
             }while (version == null);
         }
-    }
-
-    /**
-     * Initialisation
-     */
-    void go() throws Exception {
-        System.out.println("Initialisation...");
-	     
-        a1();
         store.close();
     }
+
 }

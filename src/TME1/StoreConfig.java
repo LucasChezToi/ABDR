@@ -15,35 +15,36 @@ public class StoreConfig {
         String hostName = "localhost";
         String hostPort = "5000";
 
-        final int nArgs = argv.length;
-        int argc = 0;
-
-        while (argc < nArgs) {
-            final String thisArg = argv[argc++];
-
-            if (thisArg.equals("-store")) {
-                if (argc < nArgs) {
-                    storeName = argv[argc++];
-                } else {
-                    usage("-store requires an argument");
-                }
-            } else if (thisArg.equals("-host")) {
-                if (argc < nArgs) {
-                    hostName = argv[argc++];
-                } else {
-                    usage("-host requires an argument");
-                }
-            } else if (thisArg.equals("-port")) {
-                if (argc < nArgs) {
-                    hostPort = argv[argc++];
-                } else {
-                    usage("-port requires an argument");
-                }
-            } else {
-                usage("Unknown argument: " + thisArg);
-            }
+        if(argv != null){
+	        final int nArgs = argv.length;
+	        int argc = 0;
+	
+	        while (argc < nArgs) {
+	            final String thisArg = argv[argc++];
+	
+	            if (thisArg.equals("-store")) {
+	                if (argc < nArgs) {
+	                    storeName = argv[argc++];
+	                } else {
+	                    usage("-store requires an argument");
+	                }
+	            } else if (thisArg.equals("-host")) {
+	                if (argc < nArgs) {
+	                    hostName = argv[argc++];
+	                } else {
+	                    usage("-host requires an argument");
+	                }
+	            } else if (thisArg.equals("-port")) {
+	                if (argc < nArgs) {
+	                    hostPort = argv[argc++];
+	                } else {
+	                    usage("-port requires an argument");
+	                }
+	            } else {
+	                usage("Unknown argument: " + thisArg);
+	            }
+	        }
         }
-
         store = KVStoreFactory.getStore
             (new KVStoreConfig(storeName, hostName + ":" + hostPort));
 	}

@@ -2,18 +2,20 @@ package TME1;
 
 public class Main {
 	
-	public void main(String[] args){
+	public static void main(String[] args){
 		
 	    try {
 	        Initializer a = new Initializer(args);
-	        a.init1();
+	        a.init2();
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	    
 	    try {
-            Exo1 exo1 = new Exo1(args);
-            exo1.go();
+	    	IncrementalThread p1 = new IncrementalThread("2.3");
+	    	IncrementalThread p2 = new IncrementalThread("2.3");
+	        p1.start();
+	        p2.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
