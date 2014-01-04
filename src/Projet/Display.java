@@ -46,7 +46,6 @@ public class Display extends StoreConfig{
 				majorPath.clear();
 				majorPath.add("Profil1");
 				majorPath.add("Objets"+oi);
-				//majorPath.add("attrChar"+atti);
 				Key k = Key.createKey(majorPath,"attrInt"+atti);
 				keys.add(k);
 				
@@ -60,7 +59,6 @@ public class Display extends StoreConfig{
 				majorPath.clear();
 				majorPath.add("Profil1");
 				majorPath.add("Objets"+oi);
-				//majorPath.add("attrChar"+atti);
 				Key k = Key.createKey(majorPath,"attrChar"+atti);
 				keys.add(k);
 				
