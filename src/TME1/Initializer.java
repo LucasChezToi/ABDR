@@ -1,9 +1,6 @@
 package TME1;
 
 
-import oracle.kv.KVStore;
-import oracle.kv.KVStoreConfig;
-import oracle.kv.KVStoreFactory;
 import oracle.kv.Key;
 import oracle.kv.Value;
 
