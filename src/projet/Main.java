@@ -1,10 +1,11 @@
-package Projet;
+package projet;
 
 public class Main {
 
-	static final int MAX_PROFIL = 1000;
+	static final int MAX_PROFIL = 10;
 	static final int MAX_OBJET = 100;
 	static final int MAX_ATTRIBUTE = 5;
+	private static final int MAX_THREADS = 10;
 	
 	public static void main(String[] args){
 
@@ -18,11 +19,11 @@ public class Main {
 		a.initE1();
 		endTime =  System.currentTimeMillis();
 		System.out.println("========== Fin d'initialisation : "+(endTime-startTime)+" ms");
-
-		/**
-		 * 
-		 */
-		IncrementalThread p1 = new IncrementalThread("E.1");
-		p1.start();
+		
+		
+		for(int i = 0; i < MAX_THREADS; i++){
+			ApplicativeThread appThread = new ApplicativeThread("profile"+i);
+			appThread.start();
+		}
 	}
 }

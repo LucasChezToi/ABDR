@@ -1,4 +1,4 @@
-package Projet;
+package projet;
 
 import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
@@ -49,34 +49,6 @@ public class StoreConfig {
             (new KVStoreConfig(storeName, hostName + ":" + hostPort));
 	}
 
-//	public StoreConfig(){
-//        String storeName = "kvstore";
-//        String hostName = "localhost";
-//        String hostPort = "5000";
-//        store = KVStoreFactory.getStore
-//            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
-//	}
-//	
-//	public StoreConfig(String storeName,String hostName,String hostPort){
-//        store = KVStoreFactory.getStore
-//            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
-//	}
-	
-	public StoreConfig(){
-        String storeName = "kvstore";
-        String hostName = "localhost";
-        String hostPort = "5000";
-        store = KVStoreFactory.getStore
-            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
-	}
-	
-	public StoreConfig(String storeName,String hostName,String hostPort){
-        store = KVStoreFactory.getStore
-            (new KVStoreConfig(storeName, hostName + ":" + hostPort));
-	}
-	
-	
-	
 	private void usage(String message) {
         System.out.println("\n" + message + "\n");
         System.out.println("usage: " + getClass().getName());
