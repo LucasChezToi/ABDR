@@ -1,4 +1,4 @@
-package projet;
+package etape2;
 /**
  * TME avec KVStore : Init
  */

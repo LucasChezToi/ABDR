@@ -1,4 +1,4 @@
-package projet;
+package etape2;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

@@ -1,4 +1,4 @@
-package projet;
+package etape2;
 
 public class ApplicativeThread extends Thread{
 	String profile;

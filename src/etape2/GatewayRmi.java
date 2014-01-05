@@ -1,4 +1,4 @@
-package projet;
+package etape2;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -41,11 +41,10 @@ public class GatewayRmi  extends UnicastRemoteObject implements IGatewayRmi {
 
 	@Override
 	public int commit(String profile, int lastObjectId) throws RemoteException {
-	
+		
+		
 		ApplicativeThread appThread = new ApplicativeThread("commit",profile,lastObjectId);
 		appThread.start();
-		
-		
 		// TODO Auto-generated method stub
 		return 0;
 	}

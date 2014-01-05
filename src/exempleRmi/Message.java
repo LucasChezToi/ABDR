@@ -11,7 +11,13 @@ import java.io.Serializable;
  * Message
  */
 public class Message implements Serializable {
-    private Msg type;
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Msg type;
 
     private long creationClockTime;
     private long creationTimestamp;

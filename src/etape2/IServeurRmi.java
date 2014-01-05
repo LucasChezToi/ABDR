@@ -1,11 +1,12 @@
-package projet;
+package etape2;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface IGatewayRmi extends Remote {
+import oracle.kv.KVStore;
+
+public interface IServeurRmi extends Remote {
 	public String getNameServeur() throws RemoteException;
-	public int migration(String profile) throws RemoteException;
+	public int migration(String profile,String[] storeDest) throws RemoteException;
 	public int commit(String profile, int lastObjectId) throws RemoteException;
-	public int initialize() throws RemoteException;
 }

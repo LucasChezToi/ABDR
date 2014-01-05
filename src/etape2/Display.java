@@ -1,4 +1,4 @@
-package projet;
+package etape2;
 
 import java.util.ArrayList;
 import java.util.List;

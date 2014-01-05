@@ -1,4 +1,4 @@
-package projet;
+package etape2;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

@@ -1,4 +1,4 @@
-package projet;
+package etape2;
 
 import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
