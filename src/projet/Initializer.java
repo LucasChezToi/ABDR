@@ -18,6 +18,10 @@ public class Initializer extends StoreConfig{
 			tr = new Transaction(null);
 			tr.commit("profile"+i, 0);
 		}
+		
+//		tr = new Transaction(null);
+//		String storeDest[] = {"-store","kvstore1","-host","Mini-Lenix","-port","5002","-admin","5003"};
+//		tr.migration("profile1", new StoreConfig(storeDest).getStore());
 		store.close();
 	}  
 

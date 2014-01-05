@@ -48,6 +48,10 @@ public class StoreConfig {
         store = KVStoreFactory.getStore
             (new KVStoreConfig(storeName, hostName + ":" + hostPort));
 	}
+	
+	public KVStore getStore(){
+		return this.store;
+	}
 
 	private void usage(String message) {
         System.out.println("\n" + message + "\n");
