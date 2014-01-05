@@ -1,3 +1,5 @@
+package exempleRmi;
+
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * Message
  */
 public class Message implements Serializable {
-    private M type;
+    private Msg type;
 
     private long creationClockTime;
     private long creationTimestamp;
@@ -19,7 +21,7 @@ public class Message implements Serializable {
 
     private LinkedList<FT> fromTo;
 
-    Message(M type) {
+    Message(Msg type) {
 	this.type = type;
 	properties = new HashMap<String, String>();
 	creationClockTime = System.currentTimeMillis();
@@ -28,7 +30,7 @@ public class Message implements Serializable {
     }
 
 
-    Message(String from, String to, M type) {
+    Message(String from, String to, Msg type) {
 	this.type = type;
 	properties = new HashMap<String, String>();
 	creationClockTime = System.currentTimeMillis();
@@ -51,7 +53,7 @@ public class Message implements Serializable {
 	return properties.get(name);
     }
 
-    M getType(){return type;}
+    Msg getType(){return type;}
 
 
 

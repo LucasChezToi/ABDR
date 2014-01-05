@@ -7,6 +7,11 @@ public class Application extends StoreConfig {
 		// TODO Auto-generated constructor stub
 	}
 
+	public void commit(String profile,int lastObjectId){
+		Transaction transaction = new Transaction(null);
+		transaction.commit(profile, lastObjectId);
+	}
+
 	public void run(String profile){
 		Transaction transaction = new Transaction(null);
 		int iterator = 0, lastObjectId = Main.MAX_OBJET;
