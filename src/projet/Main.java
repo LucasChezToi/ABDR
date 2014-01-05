@@ -3,7 +3,7 @@ package projet;
 public class Main {
 
 	static final int MAX_PROFIL = 10;
-	static final int MAX_OBJET = 100;
+	static final int MAX_OBJET = 10;
 	static final int MAX_ATTRIBUTE = 5;
 	private static final int MAX_THREADS = 10;
 	
