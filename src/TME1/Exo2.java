@@ -23,15 +23,28 @@ public class Exo2 extends StoreConfig{
 		super(argv);
 	}
 
+	private void incrementValue(List<String> profile){
+		Version version = null;
+		do{
+			Key k = Key.createKey(profile);
+			ValueVersion valVer = store.get(k);
+			Version match = valVer.getVersion();
+			String value = new String(valVer.getValue().getValue());
+			System.out.println(profile + " = "+value);
+			value = Integer.toString(Integer.parseInt(value)+1);
+			System.out.println("new value " + profile + " = "+value);
+			version = store.putIfVersion(k, Value.createValue(value.getBytes()), match);
+		}while(version == null);
+	}
+
 	void a1() throws Exception {
+		List<String> profile = new ArrayList<String>();
 		for(int i=0;i<1000;i++){
 			for(int j=1; j<6; j++){
-				Key k = Key.createKey("C1","p"+j);
-				String value = new String(store.get(k).getValue().getValue());
-				System.out.println("p" + j + " = "+value);
-				value = Integer.toString(Integer.parseInt(value)+1);
-				System.out.println("new value p" + j + " = "+value);
-				store.put(k, Value.createValue(value.getBytes()));
+				profile.clear();
+				profile.add("C1");
+				profile.add("p"+j);
+				this.incrementValue(profile);
 			}
 		}
 		store.close();
@@ -41,20 +54,24 @@ public class Exo2 extends StoreConfig{
 		int max = 0, valint, i, j;
 		String value;
 		Key k;
+		Version version = null;
 		for(i=0;i<1000;i++){
-			for(j=1; j<6; j++){
-				k = Key.createKey("C1","p"+j);
-				value = new String(store.get(k).getValue().getValue());
-				System.out.println("p" + j + " = "+value);
-				valint = Integer.parseInt(value);
-				if(max < valint) max = valint;
-			}
-			for(j=1; j<6; j++){
-				k = Key.createKey("C1","p"+j);
-				value = Integer.toString(max+1);
-				System.out.println("new value p" + j + " = "+value);
-				store.put(k, Value.createValue(value.getBytes()));
-			}
+			do{
+				for(j=1; j<6; j++){
+					k = Key.createKey("C1","p"+j);
+					value = new String(store.get(k).getValue().getValue());
+					valint = Integer.parseInt(value);
+					if(max < valint) max = valint;
+				}
+				for(j=1; j<6; j++){
+					k = Key.createKey("C1","p"+j);
+					ValueVersion valVer = store.get(k);
+					Version match = valVer.getVersion();
+					value = Integer.toString(max+1);
+					System.out.println(i+" : new value p" + j + " = "+value);
+					version = store.putIfVersion(k, Value.createValue(value.getBytes()), match);
+				}
+			}while(version == null);
 		}
 		store.close();
 	}
@@ -81,7 +98,6 @@ public class Exo2 extends StoreConfig{
 			value = new String(store.get(k).getValue().getValue());
 			valVer = store.get(keys.get(j-1));
 			versions.add(valVer.getVersion());
-			System.out.println("p" + j + " = "+value);
 			valint = Integer.parseInt(value);
 			if(max < valint) max = valint;
 		}
