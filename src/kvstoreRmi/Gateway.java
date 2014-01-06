@@ -8,8 +8,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import exempleRmi.Msg;
-
 public class Gateway {
 	
 	public static Map<Integer, IServeur> mapServeur;
