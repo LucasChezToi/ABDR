@@ -52,13 +52,13 @@ public class Display extends StoreConfig{
 			/**
 			 * Adding Attribute of type String
 			 */
-			for(attribute=0; attribute<5; attribute++){
+			for(attribute = 0; attribute < Serveur.MAX_ATTRIBUTE; attribute++){
 				majorPath.clear();
 				majorPath.add(profile);
-				majorPath.add("Objets"+object);
+				majorPath.add("Objet"+object);
 				Key k = Key.createKey(majorPath,"attrChar"+attribute);
 				keys.add(k);
-				
+				System.out.println(k.getFullPath());
 				value = new String(store.get(k).getValue().getValue());
 				valVer = store.get(keys.get(attribute));
 				versions.add(valVer.getVersion());
