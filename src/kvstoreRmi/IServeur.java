@@ -10,5 +10,6 @@ public interface IServeur extends Remote {
 	public int getPort() throws RemoteException;
 	public void displayTr(String profile) throws RemoteException;
 	public void migration(String profile, String[] kvstore, int lastObjetId) throws RemoteException;
+	public void delete(String profile, int nbObject) throws RemoteException;
 	
 }

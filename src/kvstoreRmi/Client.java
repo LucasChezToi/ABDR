@@ -14,6 +14,9 @@ public class Client {
 				IGateway gt = (IGateway) registry.lookup("Gateway");
 				gt.comit(1);
 				gt.display("profile1");
+				System.out.println("suppression");
+				gt.delete(1);
+				gt.display("profile1");
 				
 				
 			} catch (NotBoundException e) {

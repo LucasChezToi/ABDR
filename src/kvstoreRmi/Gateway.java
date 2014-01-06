@@ -26,7 +26,6 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	public Gateway() throws RemoteException{
 		myRegistry[0] = LocateRegistry.getRegistry("132.227.115.102", 55553);
 		myRegistry[1] = LocateRegistry.getRegistry("132.227.115.102", 55555);
-		System.out.println("constructeur ok");
 		
 	}
 	//remlpir serveurSize	
@@ -61,6 +60,9 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	
 	@Override
 	public int delete(int profile) throws RemoteException{
+		IServeur tmp = mapServeur.get("profile"+profile);
+		serveurSize.put(tmp, serveurSize.get(tmp)-mapProfile.get("profile"+profile));
+		tmp.delete("profile"+profile,mapProfile.get("profile"+profile));	
 		
 		return 0;
 	}
@@ -97,63 +99,6 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 
 		} catch (RemoteException e) {
 			e.printStackTrace();
-		}
-		
-		
-//		
-//		try {
-//			Gateway gt1 = new Gateway();
-//			gt1.comit(1);
-//			mapServeur.get("profile1").displayTr("profile1");
-//
-//		} catch (RemoteException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-//		gt.testComit();
-//		gt.testMigration();
-
-	
+		}	
 	}
-	
-	
-	
-		
-//	public void testComit(){
-//		try {
-//			IServeur serveur1 = (IServeur) myRegistry.lookup("Serveur1");
-//			serveur1.commit("profile1",0);
-//			serveur1.displayTr("profile1");
-//			
-//			System.out.println("bob");
-//			
-//			myRegistry = LocateRegistry.getRegistry("132.227.115.102", 55555);
-//			IServeur serveur2 = (IServeur) myRegistry.lookup("Serveur2");
-//			serveur2.commit("profile2",0);
-//			serveur2.displayTr("profile2");
-//		} catch (RemoteException | NotBoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//	}
-//	
-//	public void testMigration(){
-//		Registry myRegistry;
-//		try {
-//			myRegistry = LocateRegistry.getRegistry("132.227.115.102", 55553);
-//			IServeur serveur1 = (IServeur) myRegistry.lookup("Serveur1");
-//			serveur1.commit("profile1",0);
-//			serveur1.displayTr("profile1");
-//			serveur1.migration("profile1", "kvstore2", "132.227.115.102", "5002",10);
-//			
-//			System.out.println("bob");
-//			myRegistry = LocateRegistry.getRegistry("132.227.115.102", 55555);
-//			IServeur serveur2 = (IServeur) myRegistry.lookup("Serveur2");
-//			serveur2.displayTr("profile1");
-//		} catch (RemoteException | NotBoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//	}
 }

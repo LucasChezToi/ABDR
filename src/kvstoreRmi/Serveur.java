@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,9 +63,21 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	}
 	
 	@Override
-	public void displayTr(String profile){
+	public void displayTr(String profile) throws RemoteException{
 		Display affiche = new Display(arg);
 		affiche.a(profile);		
+	}
+	
+	@Override
+	public void delete(String profile,int nbObject) throws RemoteException{
+		Transaction tr = new Transaction(arg);
+		List<String> majorPath = new ArrayList<String>();
+		for(int i=0;i<nbObject;i++){
+			majorPath.clear();
+			majorPath.add(profile);
+			majorPath.add("Objet"+i);
+			tr.delete(majorPath);
+		}
 	}
 
 	@Override

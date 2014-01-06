@@ -30,6 +30,10 @@ public class Transaction extends StoreConfig{
 			createObject(profile, object, operations);
 		}return 0;
 	}
+	
+	public void delete(List<String> majorPath){
+		store.multiDelete(Key.createKey(majorPath), null,null );		
+	}
 
 	private void createObject(String profile, int object, List<Operation> operations){
 		List<String> majorPath = new ArrayList<String>();
