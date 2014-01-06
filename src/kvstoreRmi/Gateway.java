@@ -12,7 +12,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public class Gateway {
+
+public class Gateway extends UnicastRemoteObject implements IGateway{
 	
 	public static Map<String, IServeur> mapServeur = new HashMap<String, IServeur>();
 	public static Map<String, Integer> mapProfile = new HashMap<String, Integer>();
@@ -29,11 +30,17 @@ public class Gateway {
 		
 	}
 	//remlpir serveurSize	
-
-	public int comit(int profile) throws AccessException, RemoteException, NotBoundException{
+	@Override
+	public int comit(int profile) throws RemoteException{
 		IServeur serveurDest = mapServeur.get("profile"+profile);
 		if (serveurDest == null){
-			serveurDest = (IServeur) myRegistry[profile%MAX_SERVEUR].lookup("Serveur"+(profile%MAX_SERVEUR));
+			try {
+				serveurDest = (IServeur) myRegistry[profile%MAX_SERVEUR].lookup("Serveur"+(profile%MAX_SERVEUR));
+			} catch (NotBoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			mapServeur.put("profile"+profile, serveurDest);
 			mapProfile.put("profile"+profile, 0);
 			serveurSize.put(serveurDest,0);
@@ -50,6 +57,17 @@ public class Gateway {
 		}
 		System.out.println("test migration ok");
 		return 0;
+	}
+	
+	@Override
+	public int delete(int profile) throws RemoteException{
+		
+		return 0;
+	}
+	
+	@Override
+	public void display(String profile)throws RemoteException{
+		mapServeur.get(profile).displayTr(profile);
 	}
 	
 	private IServeur needsMigration(IServeur serv){
@@ -71,18 +89,27 @@ public class Gateway {
 	}	
 	
 	public static void main(String[] argv){
+		System.out.println("Gateway : 49999");
 		try {
-			Gateway gt = new Gateway();
-			gt.comit(1);
-			mapServeur.get("profile1").displayTr("profile1");
-			
-			
-			
-			
-		} catch (RemoteException | NotBoundException e) {
-			// TODO Auto-generated catch block
+			IGateway gt = new Gateway();
+			Registry registry = LocateRegistry.createRegistry(49999);
+			registry.rebind("Gateway", gt);
+
+		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		
+		
+//		
+//		try {
+//			Gateway gt1 = new Gateway();
+//			gt1.comit(1);
+//			mapServeur.get("profile1").displayTr("profile1");
+//
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 //		gt.testComit();
 //		gt.testMigration();
