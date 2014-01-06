@@ -7,17 +7,16 @@ import java.rmi.registry.Registry;
 
 public class Client {
 	
+	
+	
 	static public void main(String[] args){	
 		try {
 			Registry registry = LocateRegistry.getRegistry("localhost", 49999);
 			try {
 				IGateway gt = (IGateway) registry.lookup("Gateway");
-				gt.comit(1);
-				gt.display("profile1");
-				System.out.println("suppression");
-				gt.delete(1);
-				gt.display("profile1");
-				
+				for(int i = 0; i < 1000; i++){
+					gt.comit(i);
+				}
 				
 			} catch (NotBoundException e) {
 				e.printStackTrace();
