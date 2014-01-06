@@ -28,7 +28,7 @@ public class Gateway {
 		System.out.println("constructeur ok");
 		
 	}
-		
+	//remlpir serveurSize	
 
 	public int comit(int profile) throws AccessException, RemoteException, NotBoundException{
 		IServeur serveurDest = mapServeur.get("profile"+profile);
@@ -36,15 +36,19 @@ public class Gateway {
 			serveurDest = (IServeur) myRegistry[profile%MAX_SERVEUR].lookup("Serveur"+(profile%MAX_SERVEUR));
 			mapServeur.put("profile"+profile, serveurDest);
 			mapProfile.put("profile"+profile, 0);
+			serveurSize.put(serveurDest,0);
 			String confKvStore[] = {"kvstore"+profile%MAX_SERVEUR,"Mini-Lenix","500"+((profile%MAX_SERVEUR)*2)};
 			confServeur.put(serveurDest, confKvStore);
 		}
 		serveurDest.commit("profile"+profile, mapProfile.get("profile"+profile));
+		serveurSize.put(serveurDest,serveurSize.get(serveurDest)+10);
+		mapProfile.put("profile"+profile,mapProfile.get("profile"+profile)+10);		
+		
 		IServeur migre = needsMigration(serveurDest);
 		if(migre != null){
 			migrate("profile"+profile,migre);
 		}
-		
+		System.out.println("test migration ok");
 		return 0;
 	}
 	
@@ -64,10 +68,7 @@ public class Gateway {
 	private int migrate(String profile, IServeur serveurDest) throws RemoteException{
 		mapServeur.get(profile).migration(profile, confServeur.get(serveurDest), mapProfile.get(profile));
 		return 0;
-	}
-	
-	
-	
+	}	
 	
 	public static void main(String[] argv){
 		try {
