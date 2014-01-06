@@ -22,7 +22,7 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 
 
 
-	public Serveur(String name,int port, String storeName,String hostName, String hostPort) throws RemoteException{
+	public Serveur(String name, int port, String storeName, String hostName, String hostPort) throws RemoteException{
 		this.name = name;
 		this.port = port;
 		this.arg = new String[6];

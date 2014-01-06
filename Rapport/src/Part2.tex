@@ -1,0 +1,70 @@
+\section{Transaction et équilibrage de charge}
+
+Pour stocker les profils dans la base de données, nous avons choisi comme couple {clé, valeur} :
+\begin{itemize}
+\item clé majeure : Profil, Objet
+\item clé mineure : Attribut
+\item Valeur : valeur de l'attribut
+\end{itemize}
+
+\subsection{Etat initial}
+\paragraph{}
+Nous avons opté pour la première étape, d'une application muti-threader. Lors du lancement de notre application, un certain nombre de threads sont créés. Chaque thread est l'équivalent d'une application. L'application iter pendant 10 seconds. Lors de chaque iteration, elle execute un transaction en calculant son temps d'execution. Avant de se terminer, l'applicaion effectue une moyenne du temps d'execution de toutes les transactions qui ont été executé.
+Une transaction crée un nombre d'objets définit pour un profil définit. C'est la transaction qui interagit avec kvstore.
+
+\subsubsection{Charge ciblant un seul store}
+\paragraph{}
+Nous avons N applications (N compris entre 1 et 10) effectuants des insertions, chacune sur des profils différents, mais sur la même base de données KVDB. Les applications sont lancées de façon parallèle, mais comme elles effectuent leurs opérations sur des profils différents, il n'y a pas de problème de concurrence.
+Les temps observés, lors de l'augmentation des threads, évoluent de façon linéaire. On en déduit que le goulot d'étranglement se situe lors des écritures sur le disque.
+\\
+\\
+\begin{tabular}{|c|c|}
+    \hline
+    Nombre de threads & Temsp d'execution moyen \tabularnewline
+    \hline
+    1 & 43 \tabularnewline
+    2 & 43 \tabularnewline
+    3 & 74 \tabularnewline
+    4 & 126 \tabularnewline
+    5 & 200 \tabularnewline
+    6 & 230 \tabularnewline
+    7 & 260 \tabularnewline
+    8 & 309 \tabularnewline
+    9 & 363 \tabularnewline
+    10 & 400 \tabularnewline
+    \hline
+ \end{tabular}
+
+\subsubsection{Charge ciblant deux stores}
+\paragraph{}
+Nous avons la même architecture que dans le cas du dessus, à l'exception que nous nous retrouvons avec deux stores avec la moitié des threads effectuant des opérations sur l'un des stores et l'autre moitié sur l'autre store.
+On observe que lorsque les dix threads sont lancés, nous obtenons les mêmes vitesses d'executions que dans le cas où cinq threads sont executés sur un seul store, ce qui parait logique car c'est l'equivalent du cas précédent avec deux machines.
+\\
+\\
+\begin{tabular}{|c|c|}
+    \hline
+    Nombre de threads & Temsp d'execution moyen \tabularnewline
+    \hline
+    1 & 45 \tabularnewline
+    2 & 46 \tabularnewline
+    3 & 73 \tabularnewline
+    4 & 132 \tabularnewline
+    5 & 198 \tabularnewline
+    \hline
+ \end{tabular}
+
+\subsection{Catalogue}
+
+\paragraph{}
+A partir de cette partie, nous développons notre application de façon distribué. Chaque KVDB que nous aurons seront géré chacun par un serveur. Il y aura un serveur spécial, appelé "gateway", qui s'occupera de recevoir les requètes. Il connaitra la localisation de chacun des profils, ainsi que leur tailles, et la taille des KVDB. C'est lui qui décidera de la migration d'un profil, ainsi que de sa destination.
+Finalement, le client connaitra l'adresse du "gateway" et executera les opérations sur les profils à travers celui là.
+L'ensemble de l'application communique grâce à l'API RMI.
+
+
+\paragraph{}
+Les informations à connaitre pour migrer un profil d'un store à un autre sont, sa localisation courante. Nous n'avons pas besoin de plus d'information, en effet, comme c'est notre gateway qui s'occupe de migrer les profils, qui gère toutes les requètes adressées aux serveurs et comme il n'y a pas de multi-threading dans notre application, on peut être sur que lors d'une migration, le profil n'est pas en cours d'utilisation ou déjà en cours de migration.
+
+\subsection{Déplacement}
+
+\paragraph{}
+Notre politique de déplacement est de regarder, après chaque requète, si la base de données sur laquelle la requète n'est pas au moins deux fois plus grosse qu'une autre. Si c'est le cas, alors on migre le profil sur lequel on a fait les opérations sur le nouveau serveur.
