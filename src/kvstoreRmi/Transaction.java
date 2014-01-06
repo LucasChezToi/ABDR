@@ -59,13 +59,20 @@ public class Transaction extends StoreConfig{
 		}
 	}
 	
-	public void migration(String profile,KVStore storeDest){
+	public void migration(String profile,KVStore storeDest, int lastObjectId){
 		System.out.println("migration");
-		Iterator<KeyValueVersion> profileSrc = store.storeIterator(Direction.UNORDERED, 1, Key.createKey(profile), null, null);
+		for(int i = 0; i < lastObjectId; i++)
+			migrateObject(profile, i, storeDest);
+		
+	}
+	
+	private void migrateObject(String profile, int object, KVStore storeDest){
+		List<String> majorPath = new ArrayList<String>();
+		majorPath.add(profile); majorPath.add("Objet"+object);
+		Iterator<KeyValueVersion> profileSrc = store.multiGetIterator(Direction.REVERSE, 1, Key.createKey(majorPath), null, null);
 		KeyValueVersion tmp;
 		OperationFactory factory = storeDest.getOperationFactory();
 		List<Operation> operations = new ArrayList<Operation>();
-		
 		while(profileSrc.hasNext()){
 			tmp = (KeyValueVersion) profileSrc.next();
 			operations.add(factory.createPut(tmp.getKey(), tmp.getValue()));
@@ -73,7 +80,7 @@ public class Transaction extends StoreConfig{
 		try{
 			storeDest.execute(operations);
 		}catch (OperationExecutionException e){
-			this.migration(profile, storeDest);
+			this.migrateObject(profile, object, storeDest);
 		}
 				
 	}

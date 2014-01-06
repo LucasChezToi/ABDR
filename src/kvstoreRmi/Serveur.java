@@ -7,7 +7,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.List;
 
-import etape1.Transaction;
+import oracle.kv.KVStoreConfig;
+import oracle.kv.KVStoreFactory;
+
 
 public class Serveur extends UnicastRemoteObject implements IServeur {
 
@@ -72,8 +74,8 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	}
 
 	@Override
-	public void migration(String profile,String storeDest[]) throws RemoteException {
+	public void migration(String profile,String[] kvstore, int lastObjetId) throws RemoteException {
 		Transaction tr = new Transaction(arg);
-		tr.migration(profile, new StoreConfig(storeDest).getStore());
+		tr.migration(profile, KVStoreFactory.getStore(new KVStoreConfig(kvstore[0], kvstore[1] + ":" + kvstore[2])),lastObjetId);
 	}
 }

@@ -1,46 +1,131 @@
 package kvstoreRmi;
 
+import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class Gateway {
 	
-	public static Map<Integer, IServeur> mapServeur;
+	public static Map<String, IServeur> mapServeur = new HashMap<String, IServeur>();
+	public static Map<String, Integer> mapProfile = new HashMap<String, Integer>();
+	
+	private Registry myRegistry[] = new Registry[2];
+	private int MAX_SERVEUR = 2;
+	private static final Map<IServeur, String[]> confServeur = new HashMap<IServeur, String[]>();
+	private static Map<IServeur, Integer> serveurSize = new HashMap<IServeur, Integer>();
+	
+	public Gateway() throws RemoteException{
+		myRegistry[0] = LocateRegistry.getRegistry("132.227.115.102", 55553);
+		myRegistry[1] = LocateRegistry.getRegistry("132.227.115.102", 55555);
+		System.out.println("constructeur ok");
+		
+	}
+		
 
-		
-	static public void main(String[] argv){
-		// argv
-		
-		Registry myRegistry;
-		try {
-			myRegistry = LocateRegistry.getRegistry("132.227.115.102", 55553);
-			IServeur serveur1 = (IServeur) myRegistry.lookup("Serveur1");
-			serveur1.commit("profile1",0);
-			serveur1.displayTr("profile1");
-			
-			System.out.println("bob");
-			
-			myRegistry = LocateRegistry.getRegistry("132.227.115.102", 55555);
-			IServeur serveur2 = (IServeur) myRegistry.lookup("Serveur2");
-			serveur2.commit("profile2",0);
-			serveur2.displayTr("profile2");
-			
-		} catch (RemoteException | NotBoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+	public int comit(int profile) throws AccessException, RemoteException, NotBoundException{
+		IServeur serveurDest = mapServeur.get("profile"+profile);
+		if (serveurDest == null){
+			serveurDest = (IServeur) myRegistry[profile%MAX_SERVEUR].lookup("Serveur"+(profile%MAX_SERVEUR));
+			mapServeur.put("profile"+profile, serveurDest);
+			mapProfile.put("profile"+profile, 0);
+			String confKvStore[] = {"kvstore"+profile%MAX_SERVEUR,"Mini-Lenix","500"+((profile%MAX_SERVEUR)*2)};
+			confServeur.put(serveurDest, confKvStore);
 		}
-
-		// search for myMessage service
-
-
+		serveurDest.commit("profile"+profile, mapProfile.get("profile"+profile));
+		IServeur migre = needsMigration(serveurDest);
+		if(migre != null){
+			migrate("profile"+profile,migre);
+		}
 		
+		return 0;
+	}
+	
+	private IServeur needsMigration(IServeur serv){
+		int nbObjet = serveurSize.get(serv);
+		int min =0;
+		Iterator<IServeur> iter = serveurSize.keySet().iterator();
+		IServeur tmp;
+		while(iter.hasNext()){
+			tmp = iter.next();
+			min = serveurSize.get(tmp);
+			if( min <= nbObjet/2) return tmp; 
+		}
+		return null;
+	}
+	
+	private int migrate(String profile, IServeur serveurDest) throws RemoteException{
+		mapServeur.get(profile).migration(profile, confServeur.get(serveurDest), mapProfile.get(profile));
+		return 0;
+	}
+	
+	
+	
+	
+	public static void main(String[] argv){
+		try {
+			Gateway gt = new Gateway();
+			gt.comit(1);
+			mapServeur.get("profile1").displayTr("profile1");
+			
+			
+			
+			
+		} catch (RemoteException | NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
+//		gt.testComit();
+//		gt.testMigration();
 
 	
 	}
+	
+	
+	
+		
+//	public void testComit(){
+//		try {
+//			IServeur serveur1 = (IServeur) myRegistry.lookup("Serveur1");
+//			serveur1.commit("profile1",0);
+//			serveur1.displayTr("profile1");
+//			
+//			System.out.println("bob");
+//			
+//			myRegistry = LocateRegistry.getRegistry("132.227.115.102", 55555);
+//			IServeur serveur2 = (IServeur) myRegistry.lookup("Serveur2");
+//			serveur2.commit("profile2",0);
+//			serveur2.displayTr("profile2");
+//		} catch (RemoteException | NotBoundException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//	}
+//	
+//	public void testMigration(){
+//		Registry myRegistry;
+//		try {
+//			myRegistry = LocateRegistry.getRegistry("132.227.115.102", 55553);
+//			IServeur serveur1 = (IServeur) myRegistry.lookup("Serveur1");
+//			serveur1.commit("profile1",0);
+//			serveur1.displayTr("profile1");
+//			serveur1.migration("profile1", "kvstore2", "132.227.115.102", "5002",10);
+//			
+//			System.out.println("bob");
+//			myRegistry = LocateRegistry.getRegistry("132.227.115.102", 55555);
+//			IServeur serveur2 = (IServeur) myRegistry.lookup("Serveur2");
+//			serveur2.displayTr("profile1");
+//		} catch (RemoteException | NotBoundException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//	}
 }
