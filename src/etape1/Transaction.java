@@ -26,7 +26,7 @@ public class Transaction extends StoreConfig{
 		List<Operation> operations = new ArrayList<Operation>();
 		int object;
 		//faire putifversion
-		for (object = lastObjectId; object < Main.MAX_OBJET + lastObjectId; object++){
+		for (object = lastObjectId; object < Defines.MAX_OBJET + lastObjectId; object++){
 			createObject(profile, object, operations);
 		}return 0;
 	}
@@ -37,7 +37,7 @@ public class Transaction extends StoreConfig{
 		Operation operation;
 		int attribute;
 		operations.clear();			
-		for(attribute = 0; attribute < Main.MAX_ATTRIBUTE; attribute++){
+		for(attribute = 0; attribute < Defines.MAX_ATTRIBUTE; attribute++){
 			majorPath.clear();
 			majorPath.add(profile);
 			majorPath.add("Objet"+object);
@@ -45,7 +45,7 @@ public class Transaction extends StoreConfig{
 			operations.add(operation);
 		}	
 
-		for(attribute = 0; attribute < Main.MAX_ATTRIBUTE; attribute++){
+		for(attribute = 0; attribute < Defines.MAX_ATTRIBUTE; attribute++){
 			majorPath.clear();
 			majorPath.add(profile);
 			majorPath.add("Objet"+object);

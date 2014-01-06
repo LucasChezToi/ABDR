@@ -19,7 +19,7 @@ public class Display extends StoreConfig{
 
 	void a(int profil){
 		int i;
-		for(i=0; i<Main.MAX_PROFIL; i++)
+		for(i=0; i<Defines.MAX_PROFIL; i++)
 			this.aSlave(profil);
 		store.close();
 	}
@@ -32,11 +32,11 @@ public class Display extends StoreConfig{
 		List<Version> versions = new ArrayList<Version>();
 		List<String> majorPath = new ArrayList<String>();
 
-		for(object = 0; object < Main.MAX_OBJET; object++){
+		for(object = 0; object < Defines.MAX_OBJET; object++){
 			/**
 			 * Adding Attributes of type int
 			 */
-			for(attribute = 0; attribute < Main.MAX_ATTRIBUTE; attribute++){
+			for(attribute = 0; attribute < Defines.MAX_ATTRIBUTE; attribute++){
 				majorPath.clear();
 				majorPath.add("Profil"+profil);
 				majorPath.add("Objets"+object);
