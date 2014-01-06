@@ -18,10 +18,12 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	public static Map<String, IServeur> mapServeur = new HashMap<String, IServeur>();
 	public static Map<String, Integer> mapProfile = new HashMap<String, Integer>();
 
-	private Registry myRegistry[] = new Registry[2];
+	
 	private int MAX_SERVEUR = 2;
 	private static final Map<IServeur, String[]> confServeur = new HashMap<IServeur, String[]>();
 	private static Map<IServeur, Integer> serveurSize = new HashMap<IServeur, Integer>();
+	
+	private Registry myRegistry[] = new Registry[2];
 
 	public Gateway() throws RemoteException{
 		myRegistry[0] = LocateRegistry.getRegistry("132.227.115.102", 55553);
@@ -30,7 +32,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 	//remlpir serveurSize	
 	@Override
-	public int comit(int profile) throws RemoteException{
+	public synchronized int comit(int profile) throws RemoteException{
 		IServeur serveurDest = mapServeur.get("profile"+profile);
 		if (serveurDest == null){
 			try {
@@ -59,7 +61,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 
 	@Override
-	public int delete(int profile) throws RemoteException{
+	public synchronized int delete(int profile) throws RemoteException{
 		IServeur tmp = mapServeur.get("profile"+profile);
 		serveurSize.put(tmp, serveurSize.get(tmp)-mapProfile.get("profile"+profile));
 		tmp.delete("profile"+profile,mapProfile.get("profile"+profile));	
@@ -68,7 +70,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 
 	@Override
-	public void display(String profile)throws RemoteException{
+	public synchronized void display(String profile)throws RemoteException{
 		mapServeur.get(profile).displayTr(profile);
 	}
 
@@ -85,7 +87,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		return null;
 	}
 
-	private int migrate(String profile, IServeur serveurDest) throws RemoteException{
+	private synchronized int migrate(String profile, IServeur serveurDest) throws RemoteException{
 		mapServeur.get(profile).migration(profile, confServeur.get(serveurDest), mapProfile.get(profile));
 		return 0;
 	}	
