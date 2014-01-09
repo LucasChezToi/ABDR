@@ -18,5 +18,6 @@ public class ApplicativeThread extends Thread{
 			e.printStackTrace();
 		}
 	}
+	
 }
 
