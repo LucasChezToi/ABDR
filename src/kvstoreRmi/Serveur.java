@@ -16,6 +16,7 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 
 	static final int MAX_PROFIL = 10;
 	static final int MAX_OBJET = 10;
+
 	static final int MAX_ATTRIBUTE = 5;
 	private static final int MAX_THREADS = 10;
 
@@ -50,7 +51,7 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	}
 
 	/*  MAIN  */
-	static public void main(String[] argv){
+	public static void main(String[] argv){
 		//argv1 = name | argv2 = port | argv3 = storename | argv4 = hostname | argv5 = hostport
 		System.out.println("serveur : "+argv[0]+" "+argv[1]+" "+argv[2]+" "+argv[3]+" "+argv[4]);
 		try {
@@ -63,9 +64,9 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	}
 	
 	@Override
-	public void displayTr(String profile) throws RemoteException{
+	public String displayTr(String profile,int nbObjets) throws RemoteException{
 		Display affiche = new Display(arg);
-		affiche.a(profile);		
+		return affiche.aSlave(profile,nbObjets,this.getNameServeur());		
 	}
 	
 	@Override
@@ -84,6 +85,7 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	public void commit(String profile,int lastObjectId) throws RemoteException {
 		Transaction tr = new Transaction(arg);
 		tr.commit(profile, lastObjectId);
+		System.out.println(profile+" a été ajouté à la base");
 	}
 
 	@Override

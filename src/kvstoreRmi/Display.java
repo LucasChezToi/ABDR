@@ -19,20 +19,22 @@ public class Display extends StoreConfig{
 
 	void a(String profile){
 		int i;
-		for(i=0; i<Serveur.MAX_PROFIL; i++)
-			this.aSlave(profile);
+		for(i=0; i<Serveur.MAX_PROFIL; i++){
+			this.aSlave(profile,10,"bob");
+		}
 		store.close();
 	}
 
-	void aSlave(String profile){
+	String aSlave(String profile,int nbObjets,String serv){
 		int attribute, object;
 		String value;
 		ValueVersion valVer;
 		List<Key> keys = new ArrayList<Key>();
 		List<Version> versions = new ArrayList<Version>();
 		List<String> majorPath = new ArrayList<String>();
+		String ret="Serveur = "+serv;
 
-		for(object = 0; object < Serveur.MAX_OBJET; object++){
+		for(object = 0; object < nbObjets; object++){
 			/**
 			 * Adding Attributes of type int
 			 */
@@ -42,12 +44,13 @@ public class Display extends StoreConfig{
 				majorPath.add("Objet"+object);
 				Key k = Key.createKey(majorPath,"attrInt"+attribute);
 				keys.add(k);
-				System.out.println(k.getFullPath());
+//				System.out.println(k.getFullPath());
 				value = new String(store.get(k).getValue().getValue());
 				valVer = store.get(keys.get(attribute));
 				versions.add(valVer.getVersion());
 				
-				System.out.println("Profil1->Objets"+object+"->attrInt" + attribute + " = "+value);
+//				System.out.println("Profil1->Objets"+object+"->attrInt" + attribute + " = "+value);
+				ret+= "\n"+profile+"->Objets"+object+"->attrInt" + attribute + " = "+value;
 			}
 			/**
 			 * Adding Attribute of type String
@@ -58,15 +61,18 @@ public class Display extends StoreConfig{
 				majorPath.add("Objet"+object);
 				Key k = Key.createKey(majorPath,"attrChar"+attribute);
 				keys.add(k);
-				System.out.println(k.getFullPath());
+//				System.out.println(k.getFullPath());
 				value = new String(store.get(k).getValue().getValue());
 				valVer = store.get(keys.get(attribute));
 				versions.add(valVer.getVersion());
 				
-				System.out.println("Profil1->Objets"+object+"->attrChar" + attribute + " = "+value);
+//				System.out.println("Profil1->Objets"+object+"->attrChar" + attribute + " = "+value);
+				ret+= "\n"+profile+"->Objets"+object+"->attrInt" + attribute + " = "+value;
 			}
-			System.out.println("");
+			ret+="\n";
+//			System.out.println("");
 		}
+		return ret;
 		
 	}
 }

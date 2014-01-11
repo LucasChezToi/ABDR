@@ -26,13 +26,13 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	private Registry myRegistry[] = new Registry[2];
 
 	public Gateway() throws RemoteException{
-		myRegistry[0] = LocateRegistry.getRegistry("132.227.115.102", 55553);
-		myRegistry[1] = LocateRegistry.getRegistry("132.227.115.102", 55555);
+		myRegistry[0] = LocateRegistry.getRegistry("localhost", 55553);
+		myRegistry[1] = LocateRegistry.getRegistry("localhost", 55555);
 
 	}
 	//remlpir serveurSize	
 	@Override
-	public synchronized int comit(int profile) throws RemoteException{
+	public int comit(int profile) throws RemoteException{
 		IServeur serveurDest = mapServeur.get("profile"+profile);
 		if (serveurDest == null){
 			try {
@@ -54,14 +54,15 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 
 		IServeur migre = needsMigration(serveurDest);
 		if(migre != null){
+			System.out.println("migration du profile"+profile+" de "+serveurDest.getNameServeur()+" vers"+migre.getNameServeur() );
 			migrate("profile"+profile,migre);
 		}
-		System.out.println("test migration ok");
+//		System.out.println("test migration ok");
 		return 0;
 	}
 
 	@Override
-	public synchronized int delete(int profile) throws RemoteException{
+	public  int delete(int profile) throws RemoteException{
 		IServeur tmp = mapServeur.get("profile"+profile);
 		serveurSize.put(tmp, serveurSize.get(tmp)-mapProfile.get("profile"+profile));
 		tmp.delete("profile"+profile,mapProfile.get("profile"+profile));	
@@ -70,12 +71,15 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 
 	@Override
-	public synchronized void display(String profile)throws RemoteException{
-		mapServeur.get(profile).displayTr(profile);
+	public synchronized String display(String profile)throws RemoteException{
+		return mapServeur.get(profile).displayTr(profile,mapProfile.get(profile));
 	}
 
 	private IServeur needsMigration(IServeur serv){
 		int nbObjet = serveurSize.get(serv);
+		if(nbObjet==0){
+			return null;
+		}
 		int min =0;
 		Iterator<IServeur> iter = serveurSize.keySet().iterator();
 		IServeur tmp;
@@ -87,8 +91,14 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		return null;
 	}
 
-	private synchronized int migrate(String profile, IServeur serveurDest) throws RemoteException{
-		mapServeur.get(profile).migration(profile, confServeur.get(serveurDest), mapProfile.get(profile));
+	private int migrate(String profile, IServeur serveurDest) throws RemoteException{
+		IServeur serveurSrc = mapServeur.get(profile);
+		serveurSrc.migration(profile, confServeur.get(serveurDest), mapProfile.get(profile));
+		
+		int sizeSrc = serveurSize.get(serveurSrc) - mapProfile.get(profile);
+		serveurSize.put(serveurSrc, sizeSrc);
+		serveurSize.put(serveurDest, (serveurSize.get(serveurDest)+mapProfile.get(profile)));
+		mapServeur.put(profile, serveurDest);
 		return 0;
 	}	
 

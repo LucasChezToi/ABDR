@@ -11,12 +11,12 @@ then
 else
 	
 	echo "Gateway.class Gateway port: 49999 \n";
-	java ./bin/Gateway.class &
+	java bin/kvstoreRmi/Gateway &
 	
 	for i in `seq 0 $(($1 - 1))`;
 	do
 		echo "Serveur.class Serveur$i 5555$((($i * 2)+3)) kvstore$i Mini-Lenix 500$((($i * 2)+1))\n";
-		java ./bin/kvstoreRmi/Serveur.class Serveur$i 5555$((($i * 2)+3)) kvstore$i Mini-Lenix 500$((($i * 2)+1)) &
+		java ./bin/kvstoreRmi/Serveur Serveur$i 5555$((($i * 2)+3)) kvstore$i Mini-Lenix 500$((($i * 2)+1)) &
 	done
 
 fi
