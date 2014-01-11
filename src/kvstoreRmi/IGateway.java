@@ -9,6 +9,6 @@ public interface IGateway extends Remote {
 
 	public int comit(int profile) throws RemoteException;
 	public int delete(int profile) throws RemoteException;
-	public void display(String profile) throws RemoteException;
+	public String display(String profile) throws RemoteException;
 
 }
