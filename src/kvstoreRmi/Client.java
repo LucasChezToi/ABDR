@@ -37,27 +37,39 @@ public class Client {
 		}
 	}
 
-
-	public static void main(String[] args){	
-
-		IGateway gt = connectGateway("localhost", 49999);
+	private static void peupler(IGateway gt,int nbProfiles){
 		try {
-			for(int i = 0; i < 1000; i++){
+			for(int i = 0; i < nbProfiles; i++){
 				gt.comit(i);				
 				if(i%50==0){
 					System.out.println("creation de "+i+" profiles");
 				}
 			}
-
-			System.out.println("fin des insertions");
-			System.out.println(gt.display("profile0"));
-			etape1(gt,0);
-			System.out.println(gt.display("profile0"));
-
-
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void afficher(IGateway gt,int profile){
+		try {
+			System.out.println(gt.display("profile"+profile));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
 
+
+	public static void main(String[] args){	
+		
+		//TODO faire les transactions multiclé !
+
+		IGateway gt = connectGateway("localhost", 49999);
+
+			peupler(gt, 1000);
+			System.out.println("fin des insertions");
+			
+			afficher(gt,0);
+				etape1(gt,0);
+			afficher(gt,0);
 	}
 }
