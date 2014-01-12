@@ -37,6 +37,11 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 
 	}
 	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see kvstoreRmi.IGateway#setRegistry(int, java.lang.String, int)
+	 * permet de definir une nouvelle adresse ip pour le registre
+	 */
 	public void setRegistry(int idRegistre,String ip,int port)throws RemoteException{
 		try {
 			myRegistry[idRegistre] = LocateRegistry.getRegistry(ip,port);
@@ -45,8 +50,15 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		}
 		
 	}
-	//remlpir serveurSize	
+	
 	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see kvstoreRmi.IGateway#comit(int, boolean)
+	 * si le profil ne possede pas de Serveur, alors il s'ajoute dans un serveur en fonction de son id
+	 * puis on fait un commit à partir de son serveur
+	 * si la migration est activé, alors on cherche un serveur moins chargé pour migrer
+	 */
 	public int comit(int profile,boolean migrate) throws RemoteException{
 		IServeur serveurDest = mapServeur.get("profile"+profile);
 		if (serveurDest == null){
@@ -72,11 +84,17 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 				migrate("profile"+profile,migre);
 			}
 		}
-//		System.out.println("test migration ok");
 		return 0;
 	}
 	
 	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see kvstoreRmi.IGateway#delete(int)
+	 * on recupere le serveur associé au profile
+	 * on suprime le profil du serveur
+	 * on met a jour la charge des serveurs
+	 */
 	public int delete(int profile) throws RemoteException{
 		IServeur tmp = mapServeur.get("profile"+profile);
 		if(tmp == null){
@@ -91,6 +109,12 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 
 	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see kvstoreRmi.IGateway#display(java.lang.String)
+	 * verifie l'existance du profile
+	 * demande au serveur de lui renvoyer l'affichage du profile
+	 */
 	public synchronized String display(String profile)throws RemoteException{
 		if (mapServeur.get(profile)==null){
 			return "le "+profile+" n'existe pas !";
@@ -99,6 +123,11 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 	
 	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see kvstoreRmi.IGateway#displayNbObjets(java.lang.String)
+	 * renvoi le nombre d'ojets associés à un profile
+	 */
 	public synchronized String displayNbObjets(String profile)throws RemoteException{
 		if (mapServeur.get(profile)==null){
 			return "le "+profile+" n'existe pas !";
@@ -135,7 +164,12 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 	
 	
-
+	/*
+	 * retrouve le serveur possedant le profile
+	 * fait migrer le profile sur le serveurDest
+	 * supprime l'ancien instance de profile
+	 * met a jours la charge des serveurs
+	 */
 	private int migrate(String profile, IServeur serveurDest) throws RemoteException{
 		IServeur serveurSrc = mapServeur.get(profile);
 		if(serveurSrc.getNameServeur().equals(serveurDest.getNameServeur())){
@@ -143,23 +177,25 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		}
 		System.out.println("migration de "+profile+" de "+serveurSrc.getNameServeur()+" vers"+serveurDest.getNameServeur() );
 		serveurSrc.migration(profile, confServeur.get(serveurDest), mapProfile.get(profile));
+		serveurSrc.delete(profile, mapProfile.get(profile));
 		
 		int sizeSrc = serveurSize.get(serveurSrc) - mapProfile.get(profile);
 		serveurSize.put(serveurSrc, sizeSrc);
 		serveurSize.put(serveurDest, (serveurSize.get(serveurDest)+mapProfile.get(profile)));
+		
 		mapServeur.put(profile, serveurDest);
 		return 0;
 	}	
 
 	@Override
+	/* Retrouver le store le moins chargé des profiles
+	 * Migrer tous les profiles vers lui
+	 * executer le operationStore pour tous les profils de son store
+	 */
 	public int comitMultiCle(int[] profiles) throws RemoteException {
-		/* Retrouver le store le moins chargé des profiles
-		 * Migrer tous les profiles vers lui
-		 * executer le operationStore pour tous les profils de son store
-		 */
+		
 		IServeur serv = mapServeur.get("profile"+profiles[0]);
 		IServeur tmp = null;
-		
 		for(int i=1;i<profiles.length;i++){
 			tmp = mapServeur.get("profile"+profiles[i]);
 			if(serveurSize.get(serv) > serveurSize.get(tmp)){

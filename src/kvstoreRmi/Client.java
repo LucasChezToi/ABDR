@@ -10,7 +10,9 @@ import java.rmi.registry.Registry;
 
 public class Client {
 
-
+	/*
+	 * Connecte le client au Gateway
+	 */
 	private static IGateway connectGateway(String ip,int port){
 		Registry registry;
 		IGateway gt = null;
@@ -22,9 +24,12 @@ public class Client {
 		}
 		return gt;
 	}
-
+	
+	/*
+	 * execute en boucle des transactions pendant 10sec
+	 * sur un profile particulier
+	 */
 	private static void etape1(IGateway gt,int profile){
-		//commit en boucle pendant 10seconde sur un profil particulier
 		long startTime,endTime,total=0;
 		try {
 			while(total < 10000){
@@ -35,11 +40,13 @@ public class Client {
 				System.out.println("la transaction à pris "+(endTime-startTime)+" ms");
 			}
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/*
+	 * peuple la base de maniere homogene
+	 */
 	private static long peupler(IGateway gt,int nbProfiles){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
@@ -58,6 +65,9 @@ public class Client {
 
 	}
 
+	/*
+	 * affiche tous les objets/attributs d'un profile
+	 */
 	private static long afficher(IGateway gt,int profile){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
@@ -70,6 +80,9 @@ public class Client {
 		return endTime-startTime;
 	}
 
+	/*
+	 * affiche le nombre d'objets d'un profile
+	 */
 	private static long affichernbObjets(IGateway gt,int profile){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
@@ -82,6 +95,9 @@ public class Client {
 		return endTime-startTime;
 	}
 
+	/*
+	 * fait une transaction sur le profile
+	 */
 	private static long add(IGateway gt, int profile){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
@@ -94,11 +110,12 @@ public class Client {
 		return endTime-startTime;
 	}
 
+	/*
+	 * fait une transaction sur plusieurs profiles
+	 */
 	private static long addMultyCle(IGateway gt, int[] profiles){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
-
-
 		try {
 			gt.comitMultiCle(profiles);
 		} catch (RemoteException e) {
@@ -108,6 +125,9 @@ public class Client {
 		return endTime-startTime;
 	}
 
+	/*
+	 * supprime un profile et tous ses objets
+	 */
 	private static long delete(IGateway gt, int profile){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
@@ -121,6 +141,10 @@ public class Client {
 		return endTime-startTime;
 	}
 
+	/*
+	 * produit en boucle des transaction sur une period de temps time
+	 * et sur un nombre de profiles nbProfils
+	 */
 	private static long producteur(int time,IGateway gt,int nbProfils) {
 		//commit en boucle pendant 10seconde sur un profil particulier
 		long startTime,endTime,total=0;
@@ -141,8 +165,11 @@ public class Client {
 		return total;
 	}
 	
-	
-	private static long consomateur(int time,IGateway gt,int nbProfils) {
+	/*
+	 * consomme en boucle des profiles sur une period de temps time
+	 * et sur un nombre de profiles nbProfils
+	 */
+	private static long consommateur(int time,IGateway gt,int nbProfils) {
 		//commit en boucle pendant 10seconde sur un profil particulier
 		long startTime,endTime,total=0;
 		try {
@@ -227,7 +254,7 @@ public class Client {
 					break;
 
 				case consomateur:
-					time = consomateur(60000,gt,200);
+					time = consommateur(60000,gt,200);
 					System.out.println("le consomateur à tourné "+time+" ms");
 					break;
 

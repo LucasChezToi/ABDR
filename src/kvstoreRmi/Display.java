@@ -16,7 +16,11 @@ public class Display extends StoreConfig{
 	public Display(String[] argv) {
 		super(argv);
 	}
-
+	
+	/*
+	 * parcours tous les objets pour recuperer les attribut int
+	 * et les attribut char[]
+	 */
 	String aSlave(String profile,int nbObjets,String serv){
 		int attribute, object;
 		String value;
@@ -36,12 +40,9 @@ public class Display extends StoreConfig{
 				majorPath.add("Objet"+object);
 				Key k = Key.createKey(majorPath,"attrInt"+attribute);
 				keys.add(k);
-//				System.out.println(k.getFullPath());
 				value = new String(store.get(k).getValue().getValue());
 				valVer = store.get(keys.get(attribute));
 				versions.add(valVer.getVersion());
-				
-//				System.out.println("Profil1->Objets"+object+"->attrInt" + attribute + " = "+value);
 				ret+= "\n"+profile+"->Objets"+object+"->attrInt" + attribute + " = "+value;
 			}
 			/**
@@ -53,16 +54,12 @@ public class Display extends StoreConfig{
 				majorPath.add("Objet"+object);
 				Key k = Key.createKey(majorPath,"attrChar"+attribute);
 				keys.add(k);
-//				System.out.println(k.getFullPath());
 				value = new String(store.get(k).getValue().getValue());
 				valVer = store.get(keys.get(attribute));
 				versions.add(valVer.getVersion());
-				
-//				System.out.println("Profil1->Objets"+object+"->attrChar" + attribute + " = "+value);
 				ret+= "\n"+profile+"->Objets"+object+"->attrInt" + attribute + " = "+value;
 			}
 			ret+="\n";
-//			System.out.println("");
 		}
 		return ret;
 		
