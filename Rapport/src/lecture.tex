@@ -5,10 +5,51 @@
 L'industries ayant mal compris le théorème CAP, a implémenté des systèmes de bases de données limités par rapport à leur potentiel.
 Cependant, les bases de données réparties ont été développés avec l'idée que le système ne peut fonctionner sans un compromis entre cohérence et latence.
 
-
+\subsubsection{CAP is for failure}
 CAP déclare que les concepteurs des BDR peuvent choisir parmis deux de trois propriétés qui sont la cohérence, la latence et la tolérance aux fautes.
 Les concepteurs ont fait la suposition que étant donné que les systèmes de BDR doivent être tolérents aux fautes, il faut choisir entre disponibilité et consistence.
 Or CAP spécifie que le compromis entre les propriétés de cohérence et de latence ne doit être mis en place qu'en cas de fautes du réseau. Or la probabilité d'avoir des fautes du réseau dépendent de l'implementation du système (système réparti sur un WAN). La tolérence aux fautes du réseau étant rare, le théorème ne justifie pas complètement la conception par défaut des systèmes de BDR.
 
-
+\subsubsection{Consistency/latency tradeoff}
 Les systèmes de bases de données modernes ont été développé pour intéragir avec des pages web créées dynamiquement et relié à un utilisateur du site. La latence étant un facteur critique pour concerver des consommateurs.
+Or il y a un compromis fondamental entre consistence, latence et disponibilité causé par le fait que pour avoir une haute disponibilité, le système doit répliqué des données via un WAN pour se protéger des échecs d'un datacenter entier.
+
+\subsubsection{Data replication}
+Trois stratégies de réplication des données possible :
+\paragraph{Données envoyé à tout les serveurs de réplication}
+L'ordre des mises à jour peut être décidée par chaque machine, ce qui cause des problèmes de consistence.
+L'ordre des mises à jour est commune à toutes les machines via une couche de prétraitement, ce qui cause des temps de latence dû au traitement et, si la couche de prétraitement est répartie sur plusieurs machine, au protocol d'accord qui permet l'ordre des opérations, ou, si la couche de prétraitement se situe sur une seule machine, à la distance que les données doivent parcourir.
+
+
+\paragraph{Données envoyées à une machine maitre}
+Il existe trois options de réplications :
+\begin{itemize}
+\item Réplication synchrone : augmente le temps de latence
+\item Réplication asynchrone, provoque deux type de compromis possibles lors des lectures :
+\begin{enumerate}
+\item Toutes les lectures sont redirigées vers le neud maitre, ce qui provoque des temps de latence à cause de la distance et si le noeud maitre est surchargé ou s'il est tombé.
+\item Tout les noeuds peuvent effectuer des lectures mais avec des risques d'incohérences si toutes les mises à jour n'ont pas fini d'être propagées.
+\end{enumerate}
+\item Réplication synchrone sur certains noeuds, asynchrone sur le reste. On subit de nouveau deux compromis entre cohérence et latence dû aux lectures :
+\begin{enumerate}
+\item La lecture est routée vers un noeud synchrone, la cohérence est bonne mais on retrouve les différents types de latence vu précédemment.
+\item Des lectures peuvent être effectuées par tout les noeuds. Des problèmes de cohérence peuvent apparaitre.
+\end{enumerate}
+\end{itemize}
+
+\paragraph{Données envoyées à une machine aléatoire}
+Les données sont envoyées à un noeud puis répliquées à tout les autres noeuds.
+Deux options pour choisir entre cohérence et latence :
+\begin{itemize}
+\item Réplication synchrone sur tout les noeuds permet d'être cohérent mais produit d'importe latence.
+\item Réplication asynchrone permet une bonne latence mais des risques d'incohérences.
+\end{itemize}
+
+\subsubsection{Tradeoff examples}
+Il n'y a pas de stratégie concervant une faible latence avec une forte cohérence lors de réplication via un WAN.
+Les systèmes de bases de données développés dans l'industrie utilisent toutes des stratégies avec une faible latence, sacrifiant ainsi la cohérence des données.
+
+
+\subsection{Avis personnel}
+
+Cet article nous a permis d'apprendre beaucoup de chose sur le fonctionnement des systèmes de base de données réparties ainsi que les différents compromis auquels ils sont soumis dû à la réplication des données via un WAN.
