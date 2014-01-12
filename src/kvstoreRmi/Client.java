@@ -40,7 +40,9 @@ public class Client {
 		}
 	}
 
-	private static void peupler(IGateway gt,int nbProfiles){
+	private static long peupler(IGateway gt,int nbProfiles){
+		long startTime,endTime,total=0;
+		startTime = System.currentTimeMillis();
 		try {
 			for(int i = 0; i < nbProfiles; i++){
 				gt.comit(i);				
@@ -51,47 +53,82 @@ public class Client {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		endTime =  System.currentTimeMillis();
+		return endTime-startTime;
+	
 	}
 
-	private static void afficher(IGateway gt,int profile){
+	private static long afficher(IGateway gt,int profile){
+		long startTime,endTime,total=0;
+		startTime = System.currentTimeMillis();
+		
+		
+		
 		try {
 			System.out.println(gt.display("profile"+profile));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		endTime =  System.currentTimeMillis();
+		return endTime-startTime;
 	}
 	
-	private static void affichernbObjets(IGateway gt,int profile){
+	private static long affichernbObjets(IGateway gt,int profile){
+		long startTime,endTime,total=0;
+		startTime = System.currentTimeMillis();
+		
+		
+		
 		try {
 			System.out.println(gt.displayNbObjets("profile"+profile));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		endTime =  System.currentTimeMillis();
+		return endTime-startTime;
 	}
 
-	private static void add(IGateway gt, int profile){
+	private static long add(IGateway gt, int profile){
+		long startTime,endTime,total=0;
+		startTime = System.currentTimeMillis();
+		
+		
+		
 		try {
 			gt.comit(profile);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		endTime =  System.currentTimeMillis();
+		return endTime-startTime;
 	}
 
-	private static void addMultyCle(IGateway gt, int[] profiles){
+	private static long addMultyCle(IGateway gt, int[] profiles){
+		long startTime,endTime,total=0;
+		startTime = System.currentTimeMillis();
+		
+		
 		try {
 			gt.comitMultiCle(profiles);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		endTime =  System.currentTimeMillis();
+		return endTime-startTime;
 	}
 
-	private static int delete(IGateway gt, int profile){
+	private static long delete(IGateway gt, int profile){
+		long startTime,endTime,total=0;
+		startTime = System.currentTimeMillis();
+		
+		
 		try {
-			return gt.delete(profile);
+			return (long) gt.delete(profile);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		return 0;
+		endTime =  System.currentTimeMillis();
+		return endTime-startTime;
 	}
 
 
@@ -108,7 +145,8 @@ public class Client {
 		Action action = null;
 		int arguments[] = null;
 		int valueArg=0;
-		IGateway gt = connectGateway("localhost", 49999);
+		long time;
+		IGateway gt = connectGateway("132.227.114.37", 49999);
 
 		while(true){
 			try {
@@ -116,7 +154,7 @@ public class Client {
 				arguments = null;
 				valueArg=0;
 				String listAction[] = myReader.readLine().split(" ");
-				if(listAction[0]!=null){
+				if(!listAction[0].equals("")){
 					action = Action.valueOf(listAction[0]);
 				}else{
 					System.out.println("veuillez saisir une action à effectuer");
@@ -140,8 +178,8 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					peupler(gt, valueArg);
-					System.out.println("peupler : ok");
+					time = peupler(gt, valueArg);
+					System.out.println("peupler : ok en "+time+" ms");
 					break;
 
 				case afficherProfil:
@@ -152,7 +190,8 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					afficher(gt,valueArg);
+					time = afficher(gt,valueArg);
+					System.out.println("affichage fait en en "+time+" ms");
 					break;
 
 				case afficherNbObjets:
@@ -162,7 +201,8 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					affichernbObjets(gt,valueArg);
+					time = affichernbObjets(gt,valueArg);
+					System.out.println("affichage fait en en "+time+" ms");
 					break;
 					
 					
@@ -186,8 +226,8 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					add(gt,valueArg);
-					System.out.println("ajouter : le profile à été augmenté");
+					time = add(gt,valueArg);
+					System.out.println("ajouter : le profile à été augmenté en "+time+" ms");
 					break;
 
 				case ajouterMultiCle:
@@ -205,8 +245,8 @@ public class Client {
 						
 					}
 
-					addMultyCle(gt,profiles);
-					System.out.println("ajouter : les profiles ont été augmentés");
+					time = addMultyCle(gt,profiles);
+					System.out.println("ajouter : les profiles ont été augmentés en "+time+" ms");
 					break;
 
 				case supprimer:
@@ -217,11 +257,12 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-
-					if(delete(gt, valueArg)==-1){
+					
+					time = delete(gt, valueArg);
+					if(time ==-1){
 						System.out.println("le profile"+valueArg+" n'existe pas");
 					}else{
-						System.out.println("le profile"+valueArg+" a été supprimé");
+						System.out.println("le profile"+valueArg+" a été supprimé en "+time+" ms");
 					}
 					break;
 
@@ -236,6 +277,7 @@ public class Client {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			System.out.println("\n");
 
 		}
 

@@ -12,5 +12,6 @@ public interface IGateway extends Remote {
 	public int delete(int profile) throws RemoteException;
 	public String display(String profile) throws RemoteException;
 	public String displayNbObjets(String profile) throws RemoteException;
+	void setRegistry(int idRegistre, String ip, int port)throws RemoteException;
 
 }

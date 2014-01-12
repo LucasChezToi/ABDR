@@ -23,12 +23,27 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	private static final Map<IServeur, String[]> confServeur = new HashMap<IServeur, String[]>();
 	private static Map<IServeur, Integer> serveurSize = new HashMap<IServeur, Integer>();
 	
-	private Registry myRegistry[] = new Registry[2];
+	private Registry myRegistry[];
 
-	public Gateway() throws RemoteException{
-		myRegistry[0] = LocateRegistry.getRegistry("localhost", 55553);
-		myRegistry[1] = LocateRegistry.getRegistry("localhost", 55555);
+	public Gateway(int nbServ) throws RemoteException{
+		myRegistry = new Registry[nbServ];
+		int port;
+		for(int i=0;i<nbServ;i++){
+			port = 55550+i*2+3;
+//			System.out.println(port);
+			myRegistry[i] = LocateRegistry.getRegistry("132.227.114.37", port);
+		}
+		MAX_SERVEUR = nbServ;
 
+	}
+	@Override
+	public void setRegistry(int idRegistre,String ip,int port)throws RemoteException{
+		try {
+			myRegistry[idRegistre] = LocateRegistry.getRegistry(ip,port);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	//remlpir serveurSize	
 	@Override
@@ -86,7 +101,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		if (mapServeur.get(profile)==null){
 			return "le "+profile+" n'existe pas !";
 		}
-		return "le "+profile+" possede :"+mapProfile.get(profile)+" objets";
+		return "le "+profile+" possede :"+mapProfile.get(profile)+" objets sur :"+mapServeur.get(profile).getNameServeur();
 	}
 	
 	
@@ -164,7 +179,11 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	public static void main(String[] argv){
 		System.out.println("Gateway : 49999");
 		try {
-			IGateway gt = new Gateway();
+			IGateway gt = new Gateway(2); // creation de 4 gateway sur l'addresse locale
+			
+//			gt.setRegistry(2, "132.227.114.38", 55553); // modification des 2 dernier pour les positionner 
+//			gt.setRegistry(3, "132.227.114.38", 55555); // sur une autre machine 
+			
 			Registry registry = LocateRegistry.createRegistry(49999);
 			registry.rebind("Gateway", gt);
 		} catch (RemoteException e) {
