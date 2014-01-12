@@ -17,14 +17,6 @@ public class Display extends StoreConfig{
 		super(argv);
 	}
 
-	void a(String profile){
-		int i;
-		for(i=0; i<Serveur.MAX_PROFIL; i++){
-			this.aSlave(profile,10,"bob");
-		}
-		store.close();
-	}
-
 	String aSlave(String profile,int nbObjets,String serv){
 		int attribute, object;
 		String value;

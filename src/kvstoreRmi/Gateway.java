@@ -49,18 +49,17 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 			confServeur.put(serveurDest, confKvStore);
 		}
 		serveurDest.commit("profile"+profile, mapProfile.get("profile"+profile));
-		serveurSize.put(serveurDest,serveurSize.get(serveurDest)+10);
-		mapProfile.put("profile"+profile,mapProfile.get("profile"+profile)+10);		
+		serveurSize.put(serveurDest,serveurSize.get(serveurDest)+serveurDest.getMaxObjet());
+		mapProfile.put("profile"+profile,mapProfile.get("profile"+profile)+serveurDest.getMaxObjet());		
 
-		IServeur migre = needsMigration(serveurDest);
+		IServeur migre = needsMigration(serveurDest,"profile"+profile);
 		if(migre != null){
-			System.out.println("migration du profile"+profile+" de "+serveurDest.getNameServeur()+" vers"+migre.getNameServeur() );
 			migrate("profile"+profile,migre);
 		}
 //		System.out.println("test migration ok");
 		return 0;
 	}
-
+	
 	@Override
 	public int delete(int profile) throws RemoteException{
 		IServeur tmp = mapServeur.get("profile"+profile);
@@ -81,25 +80,51 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		}
 		return mapServeur.get(profile).displayTr(profile,mapProfile.get(profile));
 	}
-
-	private IServeur needsMigration(IServeur serv){
+	
+	@Override
+	public synchronized String displayNbObjets(String profile)throws RemoteException{
+		if (mapServeur.get(profile)==null){
+			return "le "+profile+" n'existe pas !";
+		}
+		return "le "+profile+" possede :"+mapProfile.get(profile)+" objets";
+	}
+	
+	
+	
+	/*
+	 * IServeur needsMigration(IServeur serv);
+	 * decide si l'opperation doit faire migrer le profile ou non
+	 */
+	private IServeur needsMigration(IServeur serv,String profil){
+		
 		int nbObjet = serveurSize.get(serv);
+		int tailleProfile = mapProfile.get(profil);
 		if(nbObjet==0){
 			return null;
 		}
 		int min =0;
+		
 		Iterator<IServeur> iter = serveurSize.keySet().iterator();
 		IServeur tmp;
 		while(iter.hasNext()){
 			tmp = iter.next();
 			min = serveurSize.get(tmp);
-			if( min <= nbObjet/2) return tmp; 
+			
+			if( (min <= nbObjet/2) && (min + tailleProfile < nbObjet )){
+				return tmp; 
+			}
 		}
 		return null;
 	}
+	
+	
 
 	private int migrate(String profile, IServeur serveurDest) throws RemoteException{
 		IServeur serveurSrc = mapServeur.get(profile);
+		if(serveurSrc.getNameServeur().equals(serveurDest.getNameServeur())){
+			return 0;
+		}
+		System.out.println("migration de "+profile+" de "+serveurSrc.getNameServeur()+" vers"+serveurDest.getNameServeur() );
 		serveurSrc.migration(profile, confServeur.get(serveurDest), mapProfile.get(profile));
 		
 		int sizeSrc = serveurSize.get(serveurSrc) - mapProfile.get(profile);
@@ -109,6 +134,33 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		return 0;
 	}	
 
+	@Override
+	public int comitMultiCle(int[] profiles) throws RemoteException {
+		/* Retrouver le store le moins chargé des profiles
+		 * Migrer tous les profiles vers lui
+		 * executer le operationStore pour tous les profils de son store
+		 */
+		IServeur serv = mapServeur.get("profile"+profiles[0]);
+		IServeur tmp = null;
+		
+		for(int i=1;i<profiles.length;i++){
+			tmp = mapServeur.get("profile"+profiles[i]);
+			if(serveurSize.get(serv) > serveurSize.get(tmp)){
+				serv = tmp;
+			}			
+		}//serv est le serveur le moins chargé
+		
+		for(int i=0;i<profiles.length;i++){
+			migrate("profile"+profiles[i], serv);
+		}//toutes les données sont sur le meme serv;
+		
+		for(int i=0;i<profiles.length;i++){
+			comit(profiles[i]);
+		}
+		
+		return 0;
+	}
+	
 	public static void main(String[] argv){
 		System.out.println("Gateway : 49999");
 		try {
@@ -120,4 +172,5 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		}
 
 	}
+
 }

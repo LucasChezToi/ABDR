@@ -14,8 +14,8 @@ import oracle.kv.KVStoreFactory;
 
 public class Serveur extends UnicastRemoteObject implements IServeur {
 
-	static final int MAX_PROFIL = 10;
-	static final int MAX_OBJET = 10;
+
+	static final int MAX_OBJET = 100;
 
 	static final int MAX_ATTRIBUTE = 5;
 	private static final int MAX_THREADS = 10;
@@ -39,14 +39,19 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	}
 
 	@Override
-	public String getNameServeur() {
+	public int getMaxObjet() throws RemoteException{
+		return MAX_OBJET;
+	}
+	
+	@Override
+	public String getNameServeur() throws RemoteException {
 		return name;
 	}
 	
 
 
 	@Override
-	public int getPort() {
+	public int getPort() throws RemoteException {
 		return port;
 	}
 
@@ -85,7 +90,7 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	public void commit(String profile,int lastObjectId) throws RemoteException {
 		Transaction tr = new Transaction(arg);
 		tr.commit(profile, lastObjectId);
-		System.out.println(profile+" a été ajouté à la base");
+//		System.out.println(profile+" a été ajouté à la base");
 	}
 
 	@Override

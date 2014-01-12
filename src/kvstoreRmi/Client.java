@@ -60,10 +60,26 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
+	
+	private static void affichernbObjets(IGateway gt,int profile){
+		try {
+			System.out.println(gt.displayNbObjets("profile"+profile));
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private static void add(IGateway gt, int profile){
 		try {
 			gt.comit(profile);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void addMultyCle(IGateway gt, int[] profiles){
+		try {
+			gt.comitMultiCle(profiles);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -81,7 +97,7 @@ public class Client {
 
 
 	private enum Action {
-		etape1, etape2, peupler, afficher, ajouter, supprimer, fin;
+		etape1, etape2, peupler, afficherProfil, afficherNbObjets, ajouter,ajouterMultiCle, supprimer, fin;
 	}
 
 	public static void main(String[] args){	
@@ -90,48 +106,122 @@ public class Client {
 
 		BufferedReader myReader = new BufferedReader( new InputStreamReader( System.in) );
 		Action action = null;
-		int argument=0;
+		int arguments[] = null;
+		int valueArg=0;
 		IGateway gt = connectGateway("localhost", 49999);
 
 		while(true){
 			try {
-				System.out.println("Actions possibles : etape1, peupler, afficher, ajouter, supprimer, fin ");
-				action = Action.valueOf(myReader.readLine());
+				System.out.println("Actions possibles : etape1, peupler, afficherProfil, afficherNbObjets, ajouter, ajouterMultiCle, supprimer, fin ");
+				arguments = null;
+				valueArg=0;
+				String listAction[] = myReader.readLine().split(" ");
+				if(listAction[0]!=null){
+					action = Action.valueOf(listAction[0]);
+				}else{
+					System.out.println("veuillez saisir une action à effectuer");
+					continue;
+				}
 
+				if(listAction.length>1){
+//					System.out.println("arguments ok");
+					arguments = new int[(listAction.length-1)];
+					for(int i=1; i < listAction.length; i++){
+						arguments[(i-1)] = Integer.parseInt(listAction[i]);
+					}
+				}
 
 				switch (action) {
 
 				case peupler:
-					System.out.println("peupler : saisir nombre de profiles à ajouter");
-					argument = Integer.parseInt(myReader.readLine());
-					peupler(gt, argument);
+					if(arguments==null){
+						System.out.println("peupler : saisir nombre de profiles à ajouter");
+						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
+					}else{
+						valueArg = arguments[0];
+					}
+					peupler(gt, valueArg);
+					System.out.println("peupler : ok");
 					break;
 
-				case afficher:
-					System.out.println("afficher : saisir le profile à afficher");
-					argument = Integer.parseInt(myReader.readLine());
-					afficher(gt,argument);
+				case afficherProfil:
+
+					if(arguments==null){
+						System.out.println("afficher : saisir le profile à afficher");
+						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
+					}else{
+						valueArg = arguments[0];
+					}
+					afficher(gt,valueArg);
 					break;
 
+				case afficherNbObjets:
+					if(arguments==null){
+						System.out.println("afficher : saisir le profile à afficher");
+						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
+					}else{
+						valueArg = arguments[0];
+					}
+					affichernbObjets(gt,valueArg);
+					break;
+					
+					
 				case etape1:
-					System.out.println("etape1 : saisir le profile à surcharger");
-					argument = Integer.parseInt(myReader.readLine());
-					etape1(gt,argument);
+
+					if(arguments==null){
+						System.out.println("etape1 : saisir le profile à surcharger");
+						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
+					}else{
+						valueArg = arguments[0];
+					}
+					etape1(gt,valueArg);
+					System.out.println("etape1 : ok");
 					break;
 
 				case ajouter:
-					System.out.println("ajouter : saisir le profile à augmenter");
-					argument = Integer.parseInt(myReader.readLine());
-					add(gt,argument);
+
+					if(arguments==null){
+						System.out.println("ajouter : saisir le profile à augmenter");
+						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
+					}else{
+						valueArg = arguments[0];
+					}
+					add(gt,valueArg);
+					System.out.println("ajouter : le profile à été augmenté");
+					break;
+
+				case ajouterMultiCle:
+					
+					int profiles[];
+					if(arguments==null){
+						System.out.println("ajouter : saisir les profiles à augmenter");
+						String listProfiles[] = myReader.readLine().split(" ");
+						profiles = new int[listProfiles.length];
+						for(int j=0;j<listProfiles.length;j++){
+							profiles[j] = Integer.parseInt(listProfiles[j]);
+						}
+					}else{
+						profiles = arguments;
+						
+					}
+
+					addMultyCle(gt,profiles);
+					System.out.println("ajouter : les profiles ont été augmentés");
 					break;
 
 				case supprimer:
-					System.out.println("supprimer : saisir le profile à supprimer");
-					argument = Integer.parseInt(myReader.readLine());
-					if(delete(gt, argument)==-1){
-						System.out.println("le profile"+argument+" n'existe pas");
+
+					if(arguments==null){
+						System.out.println("supprimer : saisir le profile à supprimer");
+						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
 					}else{
-						System.out.println("le profile"+argument+" a été supprimé");
+						valueArg = arguments[0];
+					}
+
+					if(delete(gt, valueArg)==-1){
+						System.out.println("le profile"+valueArg+" n'existe pas");
+					}else{
+						System.out.println("le profile"+valueArg+" a été supprimé");
 					}
 					break;
 
@@ -140,7 +230,7 @@ public class Client {
 					return;
 
 				default:
-					
+
 					break;
 				}
 			} catch (IOException e) {
