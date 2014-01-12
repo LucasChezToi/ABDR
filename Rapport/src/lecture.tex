@@ -1,0 +1,14 @@
+\section{Consistency Tradeoffs in modern distributed database system design}
+
+\subsection {Fiche de lecture}
+
+L'industries ayant mal compris le théorème CAP, a implémenté des systèmes de bases de données limités par rapport à leur potentiel.
+Cependant, les bases de données réparties ont été développés avec l'idée que le système ne peut fonctionner sans un compromis entre cohérence et latence.
+
+
+CAP déclare que les concepteurs des BDR peuvent choisir parmis deux de trois propriétés qui sont la cohérence, la latence et la tolérance aux fautes.
+Les concepteurs ont fait la suposition que étant donné que les systèmes de BDR doivent être tolérents aux fautes, il faut choisir entre disponibilité et consistence.
+Or CAP spécifie que le compromis entre les propriétés de cohérence et de latence ne doit être mis en place qu'en cas de fautes du réseau. Or la probabilité d'avoir des fautes du réseau dépendent de l'implementation du système (système réparti sur un WAN). La tolérence aux fautes du réseau étant rare, le théorème ne justifie pas complètement la conception par défaut des systèmes de BDR.
+
+
+Les systèmes de bases de données modernes ont été développé pour intéragir avec des pages web créées dynamiquement et relié à un utilisateur du site. La latence étant un facteur critique pour concerver des consommateurs.
