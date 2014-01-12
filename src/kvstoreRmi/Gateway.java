@@ -45,7 +45,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 			mapServeur.put("profile"+profile, serveurDest);
 			mapProfile.put("profile"+profile, 0);
 			serveurSize.put(serveurDest,0);
-			String confKvStore[] = {"kvstore"+profile%MAX_SERVEUR,"Mini-Lenix","500"+((profile%MAX_SERVEUR)*2)};
+			String confKvStore[] = {"kvstore"+profile%MAX_SERVEUR,"ari-31-201-05","500"+((profile%MAX_SERVEUR)*2)};
 			confServeur.put(serveurDest, confKvStore);
 		}
 		serveurDest.commit("profile"+profile, mapProfile.get("profile"+profile));
@@ -62,16 +62,23 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 
 	@Override
-	public  int delete(int profile) throws RemoteException{
+	public int delete(int profile) throws RemoteException{
 		IServeur tmp = mapServeur.get("profile"+profile);
+		if(tmp == null){
+			return -1;
+		}
 		serveurSize.put(tmp, serveurSize.get(tmp)-mapProfile.get("profile"+profile));
-		tmp.delete("profile"+profile,mapProfile.get("profile"+profile));	
+		tmp.delete("profile"+profile,mapProfile.get("profile"+profile));
+		mapServeur.remove("profile"+profile);
 
 		return 0;
 	}
 
 	@Override
 	public synchronized String display(String profile)throws RemoteException{
+		if (mapServeur.get(profile)==null){
+			return "le "+profile+" n'existe pas !";
+		}
 		return mapServeur.get(profile).displayTr(profile,mapProfile.get(profile));
 	}
 
