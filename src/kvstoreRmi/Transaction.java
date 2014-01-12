@@ -21,20 +21,29 @@ public class Transaction extends StoreConfig{
 		super(argv);
 	}
 
-
+	/*
+	 * ajoute Serveur.MAX_OBJET objets dans le profile a partir de lastObjectId
+	 * pour tous les objets appele la fonction createObject qui ajoute les objets avec les attributs
+	 */
 	public int commit(String profile, int lastObjectId){
 		List<Operation> operations = new ArrayList<Operation>();
 		int object;
-		//faire putifversion
 		for (object = lastObjectId; object < Serveur.MAX_OBJET + lastObjectId; object++){
 			createObject(profile, object, operations);
 		}return 0;
 	}
 	
+	/*
+	 * supprime toutes les clef possedant le majorPath
+	 */
 	public void delete(List<String> majorPath){
 		store.multiDelete(Key.createKey(majorPath), null,null );		
 	}
 
+	/*
+	 * creer un objet pour l'ajouter à un profil
+	 * ajoute tous les attributs de l'objet grace a l'OperationFactory
+	 */
 	private void createObject(String profile, int object, List<Operation> operations){
 		List<String> majorPath = new ArrayList<String>();
 		OperationFactory factory = store.getOperationFactory();
@@ -63,13 +72,18 @@ public class Transaction extends StoreConfig{
 		}
 	}
 	
+	/*
+	 * appele migrateObject sur tous les objets du profile
+	 */
 	public void migration(String profile,KVStore storeDest, int lastObjectId){
 		System.out.println("migration");
-		for(int i = 0; i < lastObjectId; i++)
+		for(int i = 0; i < lastObjectId; i++){
 			migrateObject(profile, i, storeDest);
-		
+		}		
 	}
-	
+	/*
+	 * ajoute toutes les key/valeurs du profile dans le nouveau Serveur a l'aide d'un OperationFactory
+	 */
 	private void migrateObject(String profile, int object, KVStore storeDest){
 		List<String> majorPath = new ArrayList<String>();
 		majorPath.add(profile); majorPath.add("Objet"+object);
