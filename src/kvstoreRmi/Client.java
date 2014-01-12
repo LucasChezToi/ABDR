@@ -29,7 +29,7 @@ public class Client {
 		try {
 			while(total < 10000){
 				startTime = System.currentTimeMillis();
-				gt.comit(profile);
+				gt.comit(profile,true);
 				endTime =  System.currentTimeMillis();
 				total += endTime-startTime;
 				System.out.println("la transaction à pris "+(endTime-startTime)+" ms");
@@ -45,7 +45,7 @@ public class Client {
 		startTime = System.currentTimeMillis();
 		try {
 			for(int i = 0; i < nbProfiles; i++){
-				gt.comit(i);				
+				gt.comit(i,false);				
 				if(i%50==0){
 					System.out.println("creation de "+i+" profiles");
 				}
@@ -55,15 +55,12 @@ public class Client {
 		}
 		endTime =  System.currentTimeMillis();
 		return endTime-startTime;
-	
+
 	}
 
 	private static long afficher(IGateway gt,int profile){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
-		
-		
-		
 		try {
 			System.out.println(gt.display("profile"+profile));
 		} catch (RemoteException e) {
@@ -72,13 +69,10 @@ public class Client {
 		endTime =  System.currentTimeMillis();
 		return endTime-startTime;
 	}
-	
+
 	private static long affichernbObjets(IGateway gt,int profile){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
-		
-		
-		
 		try {
 			System.out.println(gt.displayNbObjets("profile"+profile));
 		} catch (RemoteException e) {
@@ -91,11 +85,8 @@ public class Client {
 	private static long add(IGateway gt, int profile){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
-		
-		
-		
 		try {
-			gt.comit(profile);
+			gt.comit(profile,true);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -106,8 +97,8 @@ public class Client {
 	private static long addMultyCle(IGateway gt, int[] profiles){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
-		
-		
+
+
 		try {
 			gt.comitMultiCle(profiles);
 		} catch (RemoteException e) {
@@ -120,8 +111,7 @@ public class Client {
 	private static long delete(IGateway gt, int profile){
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
-		
-		
+
 		try {
 			return (long) gt.delete(profile);
 		} catch (RemoteException e) {
@@ -131,26 +121,64 @@ public class Client {
 		return endTime-startTime;
 	}
 
+	private static long producteur(int time,IGateway gt,int nbProfils) {
+		//commit en boucle pendant 10seconde sur un profil particulier
+		long startTime,endTime,total=0;
+		try {
+			while(total < time){
+				startTime = System.currentTimeMillis();
+				for(int i=0;i<nbProfils;i++){
+					gt.comit(i,false);
+				}
+				endTime =  System.currentTimeMillis();
+				total += endTime-startTime;
+				System.out.println("la production de "+nbProfils+" profils à pris "+(endTime-startTime)+" ms");
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return total;
+	}
+	
+	
+	private static long consomateur(int time,IGateway gt,int nbProfils) {
+		//commit en boucle pendant 10seconde sur un profil particulier
+		long startTime,endTime,total=0;
+		try {
+			while(total < time){
+				startTime = System.currentTimeMillis();
+				for(int i=0;i<nbProfils;i++){
+					gt.delete(i);
+				}
+				endTime =  System.currentTimeMillis();
+				total += endTime-startTime;
+				System.out.println("la consomation de "+nbProfils+" profils à pris "+(endTime-startTime)+" ms");
+			}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return total;
+	}
+
 
 
 	private enum Action {
-		etape1, etape2, peupler, afficherProfil, afficherNbObjets, ajouter,ajouterMultiCle, supprimer, fin;
+		etape1, peupler, afficherProfil, afficherNbObjets, ajouter,ajouterMultiCle, supprimer, producteur, consomateur, fin;
 	}
 
 	public static void main(String[] args){	
-
-
-
 		BufferedReader myReader = new BufferedReader( new InputStreamReader( System.in) );
 		Action action = null;
 		int arguments[] = null;
 		int valueArg=0;
 		long time;
-		IGateway gt = connectGateway("132.227.114.37", 49999);
+		IGateway gt = connectGateway("192.168.1.31", 49999);
 
 		while(true){
 			try {
-				System.out.println("Actions possibles : etape1, peupler, afficherProfil, afficherNbObjets, ajouter, ajouterMultiCle, supprimer, fin ");
+				System.out.println("Actions possibles : etape1, peupler, afficherProfil, afficherNbObjets, ajouter,ajouterMultiCle, supprimer, producteur, consomateur, fin");
 				arguments = null;
 				valueArg=0;
 				String listAction[] = myReader.readLine().split(" ");
@@ -162,7 +190,7 @@ public class Client {
 				}
 
 				if(listAction.length>1){
-//					System.out.println("arguments ok");
+					//					System.out.println("arguments ok");
 					arguments = new int[(listAction.length-1)];
 					for(int i=1; i < listAction.length; i++){
 						arguments[(i-1)] = Integer.parseInt(listAction[i]);
@@ -183,7 +211,6 @@ public class Client {
 					break;
 
 				case afficherProfil:
-
 					if(arguments==null){
 						System.out.println("afficher : saisir le profile à afficher");
 						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
@@ -192,6 +219,16 @@ public class Client {
 					}
 					time = afficher(gt,valueArg);
 					System.out.println("affichage fait en en "+time+" ms");
+					break;
+
+				case producteur:
+					time = producteur(60000,gt,200);
+					System.out.println("le producteur à tourné "+time+" ms");
+					break;
+
+				case consomateur:
+					time = consomateur(60000,gt,200);
+					System.out.println("le consomateur à tourné "+time+" ms");
 					break;
 
 				case afficherNbObjets:
@@ -204,10 +241,9 @@ public class Client {
 					time = affichernbObjets(gt,valueArg);
 					System.out.println("affichage fait en en "+time+" ms");
 					break;
-					
-					
-				case etape1:
 
+
+				case etape1:
 					if(arguments==null){
 						System.out.println("etape1 : saisir le profile à surcharger");
 						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
@@ -231,7 +267,7 @@ public class Client {
 					break;
 
 				case ajouterMultiCle:
-					
+
 					int profiles[];
 					if(arguments==null){
 						System.out.println("ajouter : saisir les profiles à augmenter");
@@ -242,7 +278,7 @@ public class Client {
 						}
 					}else{
 						profiles = arguments;
-						
+
 					}
 
 					time = addMultyCle(gt,profiles);
@@ -257,7 +293,7 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					
+
 					time = delete(gt, valueArg);
 					if(time ==-1){
 						System.out.println("le profile"+valueArg+" n'existe pas");
@@ -280,8 +316,5 @@ public class Client {
 			System.out.println("\n");
 
 		}
-
-
-		//TODO faire les transactions multiclé !
 	}
 }

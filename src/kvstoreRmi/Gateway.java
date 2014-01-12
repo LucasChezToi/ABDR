@@ -31,7 +31,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		for(int i=0;i<nbServ;i++){
 			port = 55550+i*2+3;
 //			System.out.println(port);
-			myRegistry[i] = LocateRegistry.getRegistry("132.227.114.37", port);
+			myRegistry[i] = LocateRegistry.getRegistry("192.168.1.31", port);
 		}
 		MAX_SERVEUR = nbServ;
 
@@ -47,7 +47,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 	//remlpir serveurSize	
 	@Override
-	public int comit(int profile) throws RemoteException{
+	public int comit(int profile,boolean migrate) throws RemoteException{
 		IServeur serveurDest = mapServeur.get("profile"+profile);
 		if (serveurDest == null){
 			try {
@@ -60,16 +60,17 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 			mapServeur.put("profile"+profile, serveurDest);
 			mapProfile.put("profile"+profile, 0);
 			serveurSize.put(serveurDest,0);
-			String confKvStore[] = {"kvstore"+profile%MAX_SERVEUR,"ari-31-201-05","500"+((profile%MAX_SERVEUR)*2)};
+			String confKvStore[] = {"kvstore"+profile%MAX_SERVEUR,"Mini-Lenix","500"+((profile%MAX_SERVEUR)*2)};
 			confServeur.put(serveurDest, confKvStore);
 		}
 		serveurDest.commit("profile"+profile, mapProfile.get("profile"+profile));
 		serveurSize.put(serveurDest,serveurSize.get(serveurDest)+serveurDest.getMaxObjet());
 		mapProfile.put("profile"+profile,mapProfile.get("profile"+profile)+serveurDest.getMaxObjet());		
-
-		IServeur migre = needsMigration(serveurDest,"profile"+profile);
-		if(migre != null){
-			migrate("profile"+profile,migre);
+		if(migrate){
+			IServeur migre = needsMigration(serveurDest,"profile"+profile);
+			if(migre != null){
+				migrate("profile"+profile,migre);
+			}
 		}
 //		System.out.println("test migration ok");
 		return 0;
@@ -84,6 +85,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		serveurSize.put(tmp, serveurSize.get(tmp)-mapProfile.get("profile"+profile));
 		tmp.delete("profile"+profile,mapProfile.get("profile"+profile));
 		mapServeur.remove("profile"+profile);
+		mapProfile.remove("profile"+profile);
 
 		return 0;
 	}
@@ -170,7 +172,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 		}//toutes les données sont sur le meme serv;
 		
 		for(int i=0;i<profiles.length;i++){
-			comit(profiles[i]);
+			comit(profiles[i],false);
 		}
 		
 		return 0;
