@@ -1,0 +1,24 @@
+Catalogue
+
+A partir de cette partie, nous développons notre application de façon distribué. Chaque KVDB que nous aurons seront géré chacun par un serveur. Nous avons decidé d'implementé une couche d'abstraction appelé "Gateway", qui s'occupera de recevoir les requètes et de retourner les resultats au client. Le Gateway possede connaissance de la localisation de chacun des profils, ainsi que leur tailles, et la taille des KVDB. Ainsi il aura la capacité de determiner sur quel Serveur un profile doit etre migré, lorsque celui ci est surchargé.
+Finalement, le client ne connaitra que l'adresse du "gateway" et executera les opérations sur les profils à travers celui là.
+L'ensemble de l'application communique grâce à l'API RMI.
+
+Pour l'implementation de cette solution, nous avons donc eu besoin que le Gateway possede une base de donnée mise à jour regulierement possedant :
+	- Une map "mapServeur" des serveurs en fonction des profils.
+Cette map permet de savoir avec quel serveur rmi nous devons discuter pour trouver le profil.
+
+	- Une map "mapProfile" du nombre d'objets en fonction d'un profil.
+Cette map permet de savoir le nombre d'objets actuellement present dans le profil.
+
+	- Une map "confServeur" avec les informations du KVStore en fonction du serveurRmi.
+Cette map permet de migrer les donnée d'un KVStore à un autre sans avoir à repasser par le Gateway.
+
+	- Une map "serveurSize" du nombre d'objets en fonction du serveur.
+Cette map permet de verifier la charge d'un serveur.
+
+Nous avont par ailleur créé la methode "IServeur needsMigration(IServeur serv,String profil)" qui observe la charge de tous les serveurs et la compare à la charge du serveur qui possede actuellement le profil.
+Si jamais il trouve un serveur qui à 2fois moins d'objets que lui, et que l'ajout de ce nouveau profil ne risque pas de simplement inverser la charge. Alors il retourne ce Serveur qui servira de destination pour la migration.
+
+
+

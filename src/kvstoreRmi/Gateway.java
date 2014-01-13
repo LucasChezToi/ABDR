@@ -25,13 +25,13 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	
 	private Registry myRegistry[];
 
-	public Gateway(int nbServ) throws RemoteException{
+	public Gateway(int nbServ,String ip) throws RemoteException{
 		myRegistry = new Registry[nbServ];
 		int port;
 		for(int i=0;i<nbServ;i++){
 			port = 55550+i*2+3;
 //			System.out.println(port);
-			myRegistry[i] = LocateRegistry.getRegistry("192.168.1.31", port);
+			myRegistry[i] = LocateRegistry.getRegistry(ip, port);
 		}
 		MAX_SERVEUR = nbServ;
 
@@ -215,9 +215,13 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 	
 	public static void main(String[] argv){
-		System.out.println("Gateway : 49999");
+		if(argv.length!=2){
+			System.out.println("exemple d'appel : ipServeur portGateway");
+			System.out.println("exemple d'appel : 192.168.1.31 49999");
+		}
+		System.out.println("Gateway : ipServeur="+argv[0]+" portGateway="+argv[1]);
 		try {
-			IGateway gt = new Gateway(2); // creation de 4 gateway sur l'addresse locale
+			IGateway gt = new Gateway(2,argv[0]); // creation de 4 gateway sur l'addresse locale
 			
 //			gt.setRegistry(2, "132.227.114.38", 55553); // modification des 2 dernier pour les positionner 
 //			gt.setRegistry(3, "132.227.114.38", 55555); // sur une autre machine 

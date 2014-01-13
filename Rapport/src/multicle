@@ -1,0 +1,11 @@
+Transaction multiclé
+Pour les transaction sur plusieurs profils venants de differents KVStore, nous avons décidé d'observer la charge de tous les Stores impliqué et de migrer toutes les données vers ce dernier, pour ensuite executer toutes les transactions sur le meme KVStore.
+
+Plus précisement:
+
+A partir du Gateway, la methode "int comitMultiCle(int[] profiles)" va observer la charge des differents serveurs grace à la map "mapServeur" en prenant le premier serveur en reference. Une fois ce serveur trouvé elle va alors declancher la migration de tous les profils vers son KVStore. Puis finalement elle va exectuer les transactions sur chacun de ces profils. Ne monopolisant alors qu'un seul KVStore pour cette liste d'opperations.
+
+L'avantage de cette solution est que du coté serveur, la transaction multiclé n'est percu que comme une suite d'actions atomiques; "migrate" puis "commit".
+Deplus du coté client, la transaction multiclé n'est vu que comme une liste d'opperations. L'abstraction créée par le Gateway permet de n'avoir que cette classe à modifier pour pouvoir creer des fonctionnalités complexes.
+
+

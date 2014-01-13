@@ -74,6 +74,10 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	 * bind le serveur pour l'utilisation de rmi avec les valeurs passées en argument
 	 */
 	public static void main(String[] argv){
+		
+		if(argv.length!=5){
+			System.out.println("exemple d'appel : Serveur0 55553 kvstore0 Hostname 5000 ");
+		}
 		System.out.println("serveur : "+argv[0]+" "+argv[1]+" "+argv[2]+" "+argv[3]+" "+argv[4]);
 		try {
 			IServeur serveur = new Serveur(argv[0],Integer.parseInt(argv[1]),argv[2],argv[3],argv[4]);

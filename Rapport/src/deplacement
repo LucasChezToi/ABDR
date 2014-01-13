@@ -1,0 +1,12 @@
+Déplacement
+Notre politique de déplacement est de regarder, après chaque requète, si la base de données sur laquelle la requète n'est pas au moins deux fois plus grosse qu'une autre. Si c'est le cas, alors on migre le profil sur lequel on a fait les opérations sur le nouveau serveur.
+
+Plus précisement:
+
+La methode "IServeur needsMigration(IServeur serv,String profil)" du Gateway est appelé à chaque fois que nous appelons la fonction "int comit(int profile,boolean migrate)" avec la migration activée. Si le retour n'est pas nul, alors il existe un serveur sur lequel il peut etre interessant de migrer les données. La fonction appele alors "int migrate(String profile, IServeur serveurDest)" qui lance la migration a partir du serveur.
+Une fois la migration effectué alors le Gateway envoi au serveur une demande de suppression de la donnée pour eviter les doublons. Il met ensuite à jour les differentes valeurs stoqué dans les map.
+
+Du coté serveur, lorsque la fonction "migration(String profile,String[] kvstore, int lastObjetId)" est appelé alors le serveur creer une transaction qui aura pour but de recuperer toutes les données du profil sur le KVStore et de les copier sur un autre KVStore. La decision de suppression des ancienes données est faire par le Gateway apres avoir verifié que l'opperation s'est bien déroulée.
+
+L'avantage de cette solution est que du coté client, la totalité de ces interations sont invisible. Le client ne possede que la connaissance des numeros de profils. La localisation de la donnée et la prise de decision d'une migration est faite par le Gateway. C'est egalement lui qui s'occupera de gerer toutes les requetes adressées aux serveurs.
+L'interface client épuré ne possede donc que les actions relatives à ajouter un profil, supprimer un profil ou afficher un profil.

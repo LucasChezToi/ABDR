@@ -189,19 +189,23 @@ public class Client {
 		return total;
 	}
 
-
-
 	private enum Action {
 		etape1, peupler, afficherProfil, afficherNbObjets, ajouter,ajouterMultiCle, supprimer, producteur, consomateur, fin;
 	}
 
-	public static void main(String[] args){	
+	public static void main(String[] argv){	
+		if(argv.length!=2){
+			System.out.println("exemple d'appel : ipGateway portGateway");
+			System.out.println("exemple d'appel : 192.168.1.31 49999");
+		}
+		System.out.println("Client : ipGateway="+argv[0]+" portGateway="+argv[1]);
+		
 		BufferedReader myReader = new BufferedReader( new InputStreamReader( System.in) );
 		Action action = null;
 		int arguments[] = null;
 		int valueArg=0;
 		long time;
-		IGateway gt = connectGateway("192.168.1.31", 49999);
+		IGateway gt = connectGateway(argv[0], Integer.parseInt(argv[1]));
 
 		while(true){
 			try {
