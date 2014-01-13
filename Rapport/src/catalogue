@@ -4,7 +4,7 @@ A partir de cette partie, nous développons notre application de façon distribu
 Finalement, le client ne connaitra que l'adresse du "gateway" et executera les opérations sur les profils à travers celui là.
 L'ensemble de l'application communique grâce à l'API RMI.
 
-Pour l'implementation de cette solution, nous avons donc eu besoin que le Gateway possede une base de donnée mise à jour regulierement possedant :
+Pour l'implementation de cette solution, nous avons donc eu besoin que le Gateway possede une base de donnée mise à jour regulièrement possedant :
 	- Une map "mapServeur" des serveurs en fonction des profils.
 Cette map permet de savoir avec quel serveur rmi nous devons discuter pour trouver le profil.
 

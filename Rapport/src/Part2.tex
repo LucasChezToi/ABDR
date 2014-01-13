@@ -56,15 +56,45 @@ On observe que lorsque les dix threads sont lancés, nous obtenons les mêmes vi
 \subsection{Catalogue}
 
 \paragraph{}
-A partir de cette partie, nous développons notre application de façon distribué. Chaque KVDB que nous aurons seront géré chacun par un serveur. Il y aura un serveur spécial, appelé "gateway", qui s'occupera de recevoir les requètes. Il connaitra la localisation de chacun des profils, ainsi que leur tailles, et la taille des KVDB. C'est lui qui décidera de la migration d'un profil, ainsi que de sa destination.
-Finalement, le client connaitra l'adresse du "gateway" et executera les opérations sur les profils à travers celui là.
+A partir de cette partie, nous développons notre application de façon distribué. Chaque KVDB que nous aurons seront géré chacun par un serveur. Nous avons decidé d'implementé une couche d'abstraction appelé "Gateway", qui s'occupera de recevoir les requètes et de retourner les resultats au client. Le Gateway possede connaissance de la localisation de chacun des profils, ainsi que leur tailles, et la taille des KVDB. Ainsi il aura la capacité de determiner sur quel Serveur un profile doit etre migré, lorsque celui ci est surchargé.
+Finalement, le client ne connaitra que l'adresse du "gateway" et executera les opérations sur les profils à travers celui là.
 L'ensemble de l'application communique grâce à l'API RMI.
 
+Pour l'implementation de cette solution, nous avons donc eu besoin que le Gateway possede une base de donnée mise à jour regulièrement possedant :
+\begin{itemize}
+\item Une map "mapServeur" des serveurs en fonction des profils. Cette map permet de savoir avec quel serveur rmi nous devons discuter pour trouver le profil.
+\item Une map "mapProfile" du nombre d'objets en fonction d'un profil. Cette map permet de savoir le nombre d'objets actuellement present dans le profil.
+\item Une map "confServeur" avec les informations du KVStore en fonction du serveurRmi. Cette map permet de migrer les donnée d'un KVStore à un autre sans avoir à repasser par le Gateway.
+\item Une map "serveurSize" du nombre d'objets en fonction du serveur. Cette map permet de verifier la charge d'un serveur.
+\end{itemize}
 
-\paragraph{}
-Les informations à connaitre pour migrer un profil d'un store à un autre sont, sa localisation courante. Nous n'avons pas besoin de plus d'information, en effet, comme c'est notre gateway qui s'occupe de migrer les profils, qui gère toutes les requètes adressées aux serveurs et comme il n'y a pas de multi-threading dans notre application, on peut être sur que lors d'une migration, le profil n'est pas en cours d'utilisation ou déjà en cours de migration.
+Nous avont par ailleur créé la methode "IServeur needsMigration(IServeur serv,String profil)" qui observe la charge de tous les serveurs et la compare à la charge du serveur qui possede actuellement le profil.
+Si jamais il trouve un serveur qui à 2fois moins d'objets que lui, et que l'ajout de ce nouveau profil ne risque pas de simplement inverser la charge. Alors il retourne ce Serveur qui servira de destination pour la migration.
 
 \subsection{Déplacement}
 
 \paragraph{}
 Notre politique de déplacement est de regarder, après chaque requète, si la base de données sur laquelle la requète n'est pas au moins deux fois plus grosse qu'une autre. Si c'est le cas, alors on migre le profil sur lequel on a fait les opérations sur le nouveau serveur.
+
+Plus précisement :
+
+La methode "IServeur needsMigration(IServeur serv,String profil)" du Gateway est appelé à chaque fois que nous appelons la fonction "int comit(int profile,boolean migrate)" avec la migration activée. Si le retour n'est pas nul, alors il existe un serveur sur lequel il peut etre interessant de migrer les données. La fonction appele alors "int migrate(String profile, IServeur serveurDest)" qui lance la migration a partir du serveur.
+Une fois la migration effectué alors le Gateway envoi au serveur une demande de suppression de la donnée pour eviter les doublons. Il met ensuite à jour les differentes valeurs stoqué dans les map.
+Du coté serveur, lorsque la fonction "migration(String profile,String[] kvstore, int lastObjetId)" est appelé alors le serveur creer une transaction qui aura pour but de recuperer toutes les données du profil sur le KVStore et de les copier sur un autre KVStore. La decision de suppression des ancienes données est faire par le Gateway apres avoir verifié que l'opperation s'est bien déroulée.
+
+L'avantage de cette solution est que du coté client, la totalité de ces interations sont invisible. Le client ne possede que la connaissance des numeros de profils. La localisation de la donnée et la prise de decision d'une migration est faite par le Gateway. C'est egalement lui qui s'occupera de gerer toutes les requetes adressées aux serveurs.
+
+L'interface client épuré ne possede donc que les actions relatives à ajouter un profil, supprimer un profil ou afficher un profil.
+
+\subsection {Multiclés}
+
+Pour les transaction sur plusieurs profils venants de differents KVStore, nous avons décidé d'observer la charge de tous les Stores impliqué et de migrer toutes les données vers ce dernier, pour ensuite executer toutes les transactions sur le meme KVStore.
+
+Plus précisement :
+
+A partir du Gateway, la methode "int comitMultiCle(int[] profiles)" va observer la charge des differents serveurs grace à la map "mapServeur" en prenant le premier serveur en reference. Une fois ce serveur trouvé elle va alors declancher la migration de tous les profils vers son KVStore. Puis finalement elle va exectuer les transactions sur chacun de ces profils. Ne monopolisant alors qu'un seul KVStore pour cette liste d'opperations.
+
+L'avantage de cette solution est que du coté serveur, la transaction multiclé n'est percu que comme une suite d'actions atomiques; "migrate" puis "commit".
+Deplus du coté client, la transaction multiclé n'est vu que comme une liste d'opperations. L'abstraction créée par le Gateway permet de n'avoir que cette classe à modifier pour pouvoir creer des fonctionnalités complexes.
+
+
