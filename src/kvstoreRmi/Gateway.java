@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,7 +23,6 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	private int MAX_SERVEUR = 2;
 	private static final Map<IServeur, String[]> confServeur = new HashMap<IServeur, String[]>();
 	private static Map<IServeur, Integer> serveurSize = new HashMap<IServeur, Integer>();
-	
 	private Registry myRegistry[];
 
 	public Gateway(int nbServ,String ip) throws RemoteException{
@@ -68,7 +68,7 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			mapServeur = Collections.synchronizedMap(mapServeur);
 			mapServeur.put("profile"+profile, serveurDest);
 			mapProfile.put("profile"+profile, 0);
 			serveurSize.put(serveurDest,0);
@@ -115,11 +115,11 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	 * verifie l'existance du profile
 	 * demande au serveur de lui renvoyer l'affichage du profile
 	 */
-	public synchronized String display(String profile)throws RemoteException{
-		if (mapServeur.get(profile)==null){
-			return "le "+profile+" n'existe pas !";
+	public String display(int profile)throws RemoteException{
+		if (mapServeur.get("profile"+profile)==null){
+			return "le profil"+profile+" n'existe pas !";
 		}
-		return mapServeur.get(profile).displayTr(profile,mapProfile.get(profile));
+		return mapServeur.get("profile"+profile).displayTr("profile"+profile,mapProfile.get("profile"+profile));
 	}
 	
 	@Override
@@ -128,11 +128,11 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	 * @see kvstoreRmi.IGateway#displayNbObjets(java.lang.String)
 	 * renvoi le nombre d'ojets associés à un profile
 	 */
-	public synchronized String displayNbObjets(String profile)throws RemoteException{
-		if (mapServeur.get(profile)==null){
-			return "le "+profile+" n'existe pas !";
+	public String displayNbObjets(int profile)throws RemoteException{
+		if (mapServeur.get("profile"+profile)==null){
+			return "le profil"+profile+" n'existe pas !";
 		}
-		return "le "+profile+" possede :"+mapProfile.get(profile)+" objets sur :"+mapServeur.get(profile).getNameServeur();
+		return "le profil"+profile+" possede :"+mapProfile.get("profile"+profile)+" objets sur :"+mapServeur.get("profile"+profile).getNameServeur();
 	}
 	
 	
@@ -170,7 +170,8 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	 * supprime l'ancien instance de profile
 	 * met a jours la charge des serveurs
 	 */
-	private int migrate(String profile, IServeur serveurDest) throws RemoteException{
+	private synchronized int migrate(String profile, IServeur serveurDest) throws RemoteException{
+		mapServeur = Collections.synchronizedMap(mapServeur);
 		IServeur serveurSrc = mapServeur.get(profile);
 		if(serveurSrc.getNameServeur().equals(serveurDest.getNameServeur())){
 			return 0;
@@ -215,9 +216,9 @@ public class Gateway extends UnicastRemoteObject implements IGateway{
 	}
 	
 	public static void main(String[] argv){
-		if(argv.length!=2){
-			System.out.println("exemple d'appel : ipServeur portGateway");
-			System.out.println("exemple d'appel : 192.168.1.31 49999");
+		if(argv.length!=3){
+			System.out.println("exemple d'appel : ipServeur portGateway nbServeur");
+			System.out.println("exemple d'appel : 192.168.1.31 49999 2");
 		}
 		System.out.println("Gateway : ipServeur="+argv[0]+" portGateway="+argv[1]);
 		try {

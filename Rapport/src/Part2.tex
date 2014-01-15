@@ -71,6 +71,13 @@ Pour l'implementation de cette solution, nous avons donc eu besoin que le Gatewa
 Nous avont par ailleur créé la methode "IServeur needsMigration(IServeur serv,String profil)" qui observe la charge de tous les serveurs et la compare à la charge du serveur qui possede actuellement le profil.
 Si jamais il trouve un serveur qui à 2fois moins d'objets que lui, et que l'ajout de ce nouveau profil ne risque pas de simplement inverser la charge. Alors il retourne ce Serveur qui servira de destination pour la migration.
 
+Grace à ces differents procedés, la totalité des problematiques algorithmiques sont alors à traiter dans le Gateway. Les serveurs possedent les fonctions permetant les actions atomiques simple et les clients possedent les fonctionnalités avancés. Nous avons consideré que ce Design-Pattern était interessant car il permettait de regrouper toutes les complexité algorithmiques dans la même classe Java. Ainsi, en cas de mise à jour du produit final, les fonctionnalités Client restent opperationnelles car elle ne sont que des liens vers un interface. Ceci permet d'éviter d'enclancher des mise à jour lourdes sur tous les clients lors de la modification d'une fonction d'affichage.
+De même, les serveurs ne possedant que les fonctions atomiques de bases, sont donc beaucoup moins appellé à subir des modifications.
+Ainsi, grace à ce Design-Pattern en cas d'évolution du code dans un monde fonctionnel, les clients et les serveurs n'auraient pas besoin de subir un nouveau déploiment et seul le Gateway qui est un objet unique devrais alors subir des modification.
+
+Un autre avantage du catalogue sous forme de Gateway est l'abstraction qu'il offre au client. Le client n'ayant aucune vision du fonctionnement coté serveur, il peut utiliser la Base De Donnée Repartie au même titre que s'il utilisais une Base locale. Avec la simple connaissance des ID de ses profils, il peut alors effectuer les opperations qu'il souhaite, en deleguant la totalité du travail au Gateway. Ceci offre la possibilité d'ajouter des optimisations tel que l'ajout de serveurs à la volée, ou à une gestion de la replication, sans jamais avoir besoin de modifier le Client.
+Cet interface boite noire permet une isolation totale des données serveur et permet donc d'obtenir une plus grande sécurité vis à vis de la localisation des données par un tier, tout en permetant au Gateway d'avoir une plus grande liberté sur les actions possible. 
+
 \subsection{Déplacement}
 
 \paragraph{}
@@ -82,9 +89,11 @@ La methode "IServeur needsMigration(IServeur serv,String profil)" du Gateway est
 Une fois la migration effectué alors le Gateway envoi au serveur une demande de suppression de la donnée pour eviter les doublons. Il met ensuite à jour les differentes valeurs stoqué dans les map.
 Du coté serveur, lorsque la fonction "migration(String profile,String[] kvstore, int lastObjetId)" est appelé alors le serveur creer une transaction qui aura pour but de recuperer toutes les données du profil sur le KVStore et de les copier sur un autre KVStore. La decision de suppression des ancienes données est faite par le Gateway après avoir vérifié que l'opération s'est bien déroulée.
 
+Dans le but de garantir la coherence des données, nous avons decidé d'utiliser un verou uniquement pour l'utilisation des methodes de migration, du coté gateway et du coté serveur, nous avons egalement choisi de verouiller la hashmap "mapServeur", ainsi nous avons la garantie que lorsqu'un thread client executé sur le Gateway tente d'acceder à un serveur grace à son profil, alors ce thread aura toujours le lien vers le serveur qui possede la donnée. Les problemes d'acces concurent à une donnée sont donc uniquement à traiter lors des ajouts dans le KVStore et se retrouvent simplifié à un problème de concurence basique. 
+
 L'avantage de cette solution est que du coté client, la totalité de ces interations sont invisibles. Le client ne possède que la connaissance des numéros de profils. La localisation de la donnée et la prise de decision d'une migration est faite par le Gateway. C'est egalement lui qui s'occupera de gerer toutes les requetes adressées aux serveurs.
 
-L'interface client épuré ne possede donc que les actions relatives à ajouter un profil, supprimer un profil ou afficher un profil.
+L'interface client épuré ne possede donc que les actions relatives à ajouter un profil, supprimer un profil ou afficher un profil, ainsi que les methodes reprenant les fonctionnalités demandés tel que etape1, peupler ou meme producteur et consomateur.
 
 \subsection {Multiclés}
 

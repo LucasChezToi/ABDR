@@ -9,7 +9,7 @@ par exemple :
 	- java Serveur Serveur0 55553 kvstore0 ari-31-201-05 5001
 	- java Serveur Serveur1 55555 kvstore1 ari-31-201-05 5003
 - Puis lancer le Gateway
-	- java Gateway 192.168.1.31 49999
+	- java Gateway 192.168.1.31 49999 2
 - Puis lancer les clients
 	- java Client 192.168.1.31 49999
 	- java Client 192.168.1.31 49999

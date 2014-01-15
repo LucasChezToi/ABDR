@@ -72,7 +72,7 @@ public class Client {
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
 		try {
-			System.out.println(gt.display("profile"+profile));
+			System.out.println(gt.display(profile));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -87,7 +87,7 @@ public class Client {
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
 		try {
-			System.out.println(gt.displayNbObjets("profile"+profile));
+			System.out.println(gt.displayNbObjets(profile));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -224,7 +224,9 @@ public class Client {
 					//					System.out.println("arguments ok");
 					arguments = new int[(listAction.length-1)];
 					for(int i=1; i < listAction.length; i++){
-						arguments[(i-1)] = Integer.parseInt(listAction[i]);
+						if(!listAction[i].equals("")){
+							arguments[(i-1)] = Integer.parseInt(listAction[i]);
+						}
 					}
 				}
 

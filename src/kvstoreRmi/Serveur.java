@@ -136,7 +136,7 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	 * appele la fonction de migration de la classe Transaction
 	 * en chargeant le nouveau Store dans l'appel de fonction.
 	 */
-	public void migration(String profile,String[] kvstore, int lastObjetId) throws RemoteException {
+	public synchronized void migration(String profile,String[] kvstore, int lastObjetId) throws RemoteException {
 		Transaction tr = new Transaction(arg);
 		tr.migration(profile, KVStoreFactory.getStore(new KVStoreConfig(kvstore[0], kvstore[1] + ":" + kvstore[2])),lastObjetId);
 	}
