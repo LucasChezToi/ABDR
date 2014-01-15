@@ -31,13 +31,15 @@ public class Client {
 	 */
 	private static void etape1(IGateway gt,int profile){
 		long startTime,endTime,total=0;
+		int i=0;
 		try {
-			while(total < 10000){
+			while(total < 30000){
 				startTime = System.currentTimeMillis();
 				gt.comit(profile,true);
 				endTime =  System.currentTimeMillis();
 				total += endTime-startTime;
-				System.out.println("la transaction à pris "+(endTime-startTime)+" ms");
+				System.out.println(i+";"+(endTime-startTime));
+				i++;
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
