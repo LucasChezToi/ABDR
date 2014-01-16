@@ -1,0 +1,80 @@
+Peupler la base avec 1000 profils de 100 objets avec 10 attributs = 61616 ms
+
+Liste des bench avec 1 a 5 Client sur 500 profils localisé sur le meme store sans migration pendant 10sec
+pour faire les moyenes divise le nbtransaction par 10000
+
+
+avec 1 Client.
+
+C1 moyene 44ms
+
+avec 2 Clients
+C1 moyene = 51
+C2 moyene = 51
+
+avec 3 Clients
+C1 moyene = 37
+C2 moyene = 36
+C3 moyene = 36
+
+avec 4 Clients
+C1 moyene = 76
+C2 moyene = 96
+C3 moyene = 95
+C4 moyene = 109
+
+avec 5Clients
+C1 moyene = 106
+C2 moyene = 103
+C3 moyene = 100
+C4 moyene = 96
+C5 moyene = 99
+
+------------------------------------------------------------------------
+la base a été vidé de ses profils puis rechargé avec 1000 profils de 100 objets avec 10 attributs 
+
+avec 6 Clients
+C1 moyene = 44
+C2 moyene = 44
+C3 moyene = 43
+C4 moyene = 43
+C5 moyene = 42
+C6 moyene = 42
+
+avec 7 Clients
+C1 moyene = 46
+C2 moyene = 46
+C3 moyene = 43
+C4 moyene = 43
+C5 moyene = 43
+C6 moyene = 43
+C7 moyene = 43
+
+avec 8 clients
+C1 moyene = 58
+C2 moyene = 60
+C3 moyene = 60
+C4 moyene = 64
+C5 moyene = 66
+C6 moyene = 70
+C7 moyene = 71
+C8 moyene = 70
+
+avec 9 clients
+C1 
+C2 
+C3 
+C4 
+C5 
+C6 
+C7 
+C8 
+C9 
+
+
+
+
+
+
+
+

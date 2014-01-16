@@ -29,19 +29,22 @@ public class Client {
 	 * execute en boucle des transactions pendant 10sec
 	 * sur un profile particulier
 	 */
-	private static void etape1(IGateway gt,int profile){
-		long startTime,endTime,total=0;
+	private static void etape1(IGateway gt,int nbProfils){
+		long startTime,endTime,total=0,tMoy=0;
+		int t=0;
 		try {
 			while(total < 10000){
 				startTime = System.currentTimeMillis();
-				gt.comit(profile,true);
+				gt.comit((t*2)%nbProfils,false);
 				endTime =  System.currentTimeMillis();
 				total += endTime-startTime;
-				System.out.println("la transaction à pris "+(endTime-startTime)+" ms");
+				//System.out.println(t+" "+(endTime-startTime));
+				t++;
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		System.out.println("moyene = "+(total/t));
 	}
 
 	/*
@@ -72,7 +75,7 @@ public class Client {
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
 		try {
-			System.out.println(gt.display("profile"+profile));
+			System.out.println(gt.display(profile));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -87,7 +90,7 @@ public class Client {
 		long startTime,endTime,total=0;
 		startTime = System.currentTimeMillis();
 		try {
-			System.out.println(gt.displayNbObjets("profile"+profile));
+			System.out.println(gt.displayNbObjets(profile));
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -224,7 +227,9 @@ public class Client {
 					//					System.out.println("arguments ok");
 					arguments = new int[(listAction.length-1)];
 					for(int i=1; i < listAction.length; i++){
-						arguments[(i-1)] = Integer.parseInt(listAction[i]);
+						if(!listAction[i].equals("")){
+							arguments[(i-1)] = Integer.parseInt(listAction[i]);
+						}
 					}
 				}
 
@@ -276,7 +281,7 @@ public class Client {
 
 				case etape1:
 					if(arguments==null){
-						System.out.println("etape1 : saisir le profile à surcharger");
+						System.out.println("etape1 : saisir le nombre de profils à surcharger");
 						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
 					}else{
 						valueArg = arguments[0];
