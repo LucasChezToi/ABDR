@@ -29,11 +29,12 @@ public class Client {
 	 * execute en boucle des transactions pendant 10sec
 	 * sur un profile particulier
 	 */
+
 	private static void etape1(IGateway gt,int nbProfils){
 		long startTime,endTime,total=0,tMoy=0;
 		int t=0;
 		try {
-			while(total < 10000){
+			while(total < 30000){
 				startTime = System.currentTimeMillis();
 				gt.comit((t*2)%nbProfils,false);
 				endTime =  System.currentTimeMillis();
