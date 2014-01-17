@@ -2,7 +2,6 @@ package kvstoreRmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
 
 public interface IServeur extends Remote {
 	public void commit(String profile,int lastObjectId) throws RemoteException;

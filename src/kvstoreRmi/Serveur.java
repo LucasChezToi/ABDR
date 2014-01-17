@@ -5,7 +5,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import oracle.kv.KVStoreConfig;
@@ -15,11 +14,14 @@ import oracle.kv.KVStoreFactory;
 public class Serveur extends UnicastRemoteObject implements IServeur {
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	static final int MAX_OBJET = 100;
 
 	static final int MAX_ATTRIBUTE = 5;
-	private static final int MAX_THREADS = 10;
-
 	private String name;	
 	private String arg[];
 	private int port;
