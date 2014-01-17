@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.23)  13 JAN 2014 08:29
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.23)  17 JAN 2014 15:39
 entering extended mode
  file:line:error style messages enabled.
  %&-line parsing enabled.
@@ -809,24 +809,25 @@ Underfull \hbox (badness 10000) in paragraph at lines 40--55
 
  []
 
-[2] [3]) [4] (./src/lecture.tex [5]) [6] (tmp/Rapport.aux) ) 
+[2] [3]) [4] [5] (./src/article.tex [6]) [7] (tmp/Rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 13376 strings out of 493848
- 231051 string characters out of 1152822
+ 13375 strings out of 493848
+ 231044 string characters out of 1152822
  287602 words of memory out of 3000000
  16378 multiletter control sequences out of 15000+50000
  12894 words of font info for 35 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 56i,6n,55p,643b,292s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/share/texmf/f
-onts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texmf/fonts/type1/public/cm
--super/sfbx1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb>
-</usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fo
-nts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf/fonts/type1/public/cm-
-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1728.pfb>
-Output written on tmp/Rapport.pdf (7 pages, 120870 bytes).
+ 56i,6n,55p,739b,292s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/share/tex
+mf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texmf/fonts/type1/publi
+c/cm-super/sfbx1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.
+pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texm
+f/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf/fonts/type1/public
+/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1728.p
+fb>
+Output written on tmp/Rapport.pdf (8 pages, 123783 bytes).
 PDF statistics:
- 54 PDF objects out of 1000 (max. 8388607)
+ 57 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 
