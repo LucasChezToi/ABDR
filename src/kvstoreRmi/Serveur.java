@@ -20,10 +20,29 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 	static final int MAX_ATTRIBUTE = 5;
 	private static final int MAX_THREADS = 10;
 
-	private String name;
+	private String name;	
 	private String arg[];
 	private int port;
 
+	/*  MAIN 
+	 *
+	 * bind le serveur pour l'utilisation de rmi avec les valeurs passées en argument
+	 */
+	public static void main(String[] argv){
+		
+		if(argv.length!=5){
+			System.out.println("exemple d'appel : Serveur0 55553 kvstore0 Hostname 5000 ");
+		}
+		System.out.println("serveur : "+argv[0]+" "+argv[1]+" "+argv[2]+" "+argv[3]+" "+argv[4]);
+		try {
+			IServeur serveur = new Serveur(argv[0],Integer.parseInt(argv[1]),argv[2],argv[3],argv[4]);
+			Registry registry = LocateRegistry.createRegistry(serveur.getPort());
+			registry.rebind(serveur.getNameServeur(), serveur);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
 
 	public Serveur(String name, int port, String storeName, String hostName, String hostPort) throws RemoteException{
 		this.name = name;
@@ -69,25 +88,6 @@ public class Serveur extends UnicastRemoteObject implements IServeur {
 		return port;
 	}
 
-	/*  MAIN  */
-	/*
-	 * bind le serveur pour l'utilisation de rmi avec les valeurs passées en argument
-	 */
-	public static void main(String[] argv){
-		
-		if(argv.length!=5){
-			System.out.println("exemple d'appel : Serveur0 55553 kvstore0 Hostname 5000 ");
-		}
-		System.out.println("serveur : "+argv[0]+" "+argv[1]+" "+argv[2]+" "+argv[3]+" "+argv[4]);
-		try {
-			IServeur serveur = new Serveur(argv[0],Integer.parseInt(argv[1]),argv[2],argv[3],argv[4]);
-			Registry registry = LocateRegistry.createRegistry(serveur.getPort());
-			registry.rebind(serveur.getNameServeur(), serveur);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	@Override
 	/*
 	 * (non-Javadoc)
