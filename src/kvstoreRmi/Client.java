@@ -13,7 +13,7 @@ public class Client {
 	/*
 	 * Connecte le client au Gateway
 	 */
-	private static IGateway connectGateway(String ip,int port){
+	public static IGateway connectGateway(String ip,int port){
 		Registry registry;
 		IGateway gt = null;
 		try {
@@ -30,15 +30,15 @@ public class Client {
 	 * sur un profile particulier
 	 */
 
-	private static void etape1(IGateway gt,int nbProfils){
+	public static void etape1(IGateway gt,int nbProfils, boolean migrate){
 		long startTime,endTime,total=0;
 		int t=0;
 		try {
-			while(total < 30000){
+			while(total < 30){
 				startTime = System.currentTimeMillis();
-				gt.comit((t*2)%nbProfils,false);
+				gt.comit((t*2)%nbProfils, migrate);
 				endTime =  System.currentTimeMillis();
-				total += endTime-startTime;
+				total += (endTime-startTime)/1000;
 				//System.out.println(t+" "+(endTime-startTime));
 				t++;
 			}
@@ -287,7 +287,7 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					etape1(gt,valueArg);
+					etape1(gt,valueArg, false);
 					System.out.println("etape1 : ok");
 					break;
 
