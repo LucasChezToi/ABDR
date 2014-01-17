@@ -1,0 +1,10 @@
+here=`pwd`
+
+for p in $here/lib/*.jar
+do
+  export CLASSPATH=$CLASSPATH:$p
+done
+
+echo la variable CLASSPATH vaut :
+echo $CLASSPATH
+
