@@ -30,11 +30,11 @@ public class Client {
 	 * sur un profile particulier
 	 */
 
-	public void etape1(IGateway gt,int nbProfils, boolean migrate){
+	public long etape1(IGateway gt,int nbProfils, boolean migrate){
 		long startTime,endTime = 0,total=0;
 		int t=0;
 		try {
-			while(total < 30000){
+			while(total < 10000){
 				startTime = System.currentTimeMillis();
 				gt.comit((t*2)%nbProfils, migrate);
 				endTime = System.currentTimeMillis();
@@ -45,7 +45,7 @@ public class Client {
 			e.printStackTrace();
 		}
 		if(t == 0) t=1;
-		System.out.println("moyenne = "+(total/t));
+		return (total/t);
 	}
 
 	/*

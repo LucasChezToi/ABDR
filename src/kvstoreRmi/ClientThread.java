@@ -16,7 +16,7 @@ public class ClientThread extends Thread{
 	public void run() {
 		Client client = new Client();
 		IGateway gateway = client.connectGateway(address, Integer.parseInt(port));
-		client.etape1(gateway, 1000, migrate);
-		System.out.println(this.getId());
+		long mid = client.etape1(gateway, 1000, migrate);
+		TimeStamp.add(mid);
 	}
 }
