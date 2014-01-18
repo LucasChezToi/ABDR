@@ -38,6 +38,20 @@ pour verifier la suppression
 faire 	supprimer 0		; pour supprimer le profil 0.
 puis 	afficherNbObjets 0	; pour verifier que la suppression s'est bien deroulé.
 
+-------------------------
+Pour produire un graph pour les benchmark :
 
-
-
+- Avoir un fichier texte de 2 colonnes, absisse et ordonnée.
+- lancer gnuplot puis plot "non du fichier" using 1:2 with linespoints
+- pour produire un fichier .ps toujours dans gnuplot executer les commnades suivantes :
+  - set out "nom du fichier.ps"
+  - set terminal postscript
+  - replot
+  - quit
+- Pour produire le pdf lancer ps2pdf "nom du fichier.ps"
+- l'inclure dans le latex avec:
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{nom du fichier} #sans extension
+    \caption{La légende à mettre pour la figure}
+  \end{figure}

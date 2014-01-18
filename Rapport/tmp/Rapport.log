@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.23)  17 JAN 2014 15:39
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.23)  18 JAN 2014 16:25
 entering extended mode
  file:line:error style messages enabled.
  %&-line parsing enabled.
@@ -721,35 +721,46 @@ Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
 \NC@list=\toks44
 \extratabsurround=\skip54
 \backup@length=\skip55
+)
+(/usr/share/texmf-texlive/tex/generic/epsf/epsf.sty
+This is `epsf.tex' v2.7.3 <23 July 2005>
+\epsffilein=\read3
+\epsfframemargin=\dimen173
+\epsfframethickness=\dimen174
+\epsfrsize=\dimen175
+\epsftmp=\dimen176
+\epsftsize=\dimen177
+\epsfxsize=\dimen178
+\epsfysize=\dimen179
+\pspoints=\dimen180
 ) (tmp/Rapport.aux)
 \openout1 = `Rapport.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 22.
-LaTeX Font Info:    ... okay on input line 22.
-LaTeX Info: Redefining \degres on input line 22.
-LaTeX Info: Redefining \dots on input line 22.
-LaTeX Info: Redefining \up on input line 22.
-
-(/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Info: Redefining \degres on input line 23.
+LaTeX Info: Redefining \dots on input line 23.
+LaTeX Info: Redefining \up on input line 23.
+ (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count143
-\scratchdimen=\dimen173
+\scratchdimen=\dimen181
 \scratchbox=\box41
 \nofMPsegments=\count144
 \nofMParguments=\count145
 \everyMPshowfont=\toks45
 \MPscratchCnt=\count146
-\MPscratchDim=\dimen174
+\MPscratchDim=\dimen182
 \MPnumerator=\count147
 \everyMPtoPDFconversion=\toks46
 ) ABD: EveryShipout initializing macros
@@ -800,34 +811,38 @@ driver: pdftex
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./src/Part1.tex)
 [1] (./src/Part2.tex
-Underfull \hbox (badness 10000) in paragraph at lines 17--37
+Underfull \hbox (badness 10000) in paragraph at lines 17--20
 
  []
 
+[2] <src/benchTempsClient.pdf, id=20, 845.1575pt x 597.23125pt>
+File: src/benchTempsClient.pdf Graphic file (type pdf)
 
-Underfull \hbox (badness 10000) in paragraph at lines 40--55
+<use src/benchTempsClient.pdf>
+Underfull \hbox (badness 10000) in paragraph at lines 29--44
 
  []
 
-[2] [3]) [4] [5] (./src/article.tex [6]) [7] (tmp/Rapport.aux) ) 
+[3 <./src/benchTempsClient.pdf, page is rotated 90 degrees>] [4]) [5]
+(./src/article.tex [6]) [7] (tmp/Rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 13375 strings out of 493848
- 231044 string characters out of 1152822
- 287602 words of memory out of 3000000
- 16378 multiletter control sequences out of 15000+50000
- 12894 words of font info for 35 fonts, out of 3000000 for 9000
+ 13453 strings out of 493848
+ 232101 string characters out of 1152822
+ 287861 words of memory out of 3000000
+ 16449 multiletter control sequences out of 15000+50000
+ 13567 words of font info for 36 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 56i,6n,55p,739b,292s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/share/tex
-mf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texmf/fonts/type1/publi
-c/cm-super/sfbx1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.
-pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texm
-f/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf/fonts/type1/public
-/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1728.p
-fb>
-Output written on tmp/Rapport.pdf (8 pages, 123783 bytes).
+ 56i,7n,55p,739b,292s stack positions out of 5000i,500n,10000p,200000b,50000s
+{/usr/share/texmf/fonts/enc/dvip
+s/cm-super/cm-super-t1.enc}</usr/share/texmf/fonts/type1/public/cm-super/sfbx10
+00.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/t
+exmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/type1/pub
+lic/cm-super/sfcc1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm100
+0.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/te
+xmf/fonts/type1/public/cm-super/sfrm1728.pfb>
+Output written on tmp/Rapport.pdf (8 pages, 133631 bytes).
 PDF statistics:
- 57 PDF objects out of 1000 (max. 8388607)
+ 65 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 13 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 18 words of extra memory for PDF output out of 10000 (max. 10000000)
 

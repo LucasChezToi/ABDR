@@ -17,23 +17,12 @@ Une transaction crée un nombre d'objets définit pour un profil définit. C'est
 Nous avons N applications (N compris entre 1 et 10) effectuants des insertions, chacune sur des profils différents, mais sur la même base de données KVDB. Les applications sont lancées de façon parallèle, mais comme elles effectuent leurs opérations sur des profils différents, il n'y a pas de problème de concurrence.
 Les temps observés, lors de l'augmentation des threads, évoluent de façon linéaire. On en déduit que le goulot d'étranglement se situe lors des écritures sur le disque.
 \\
-\\
-\begin{tabular}{|c|c|}
-    \hline
-    Nombre de threads & Temsp d'execution moyen \tabularnewline
-    \hline
-    1 & 43 \tabularnewline
-    2 & 43 \tabularnewline
-    3 & 74 \tabularnewline
-    4 & 126 \tabularnewline
-    5 & 200 \tabularnewline
-    6 & 230 \tabularnewline
-    7 & 260 \tabularnewline
-    8 & 309 \tabularnewline
-    9 & 363 \tabularnewline
-    10 & 400 \tabularnewline
-    \hline
- \end{tabular}
+\newpage
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.5]{src/benchTempsClient}
+  \caption{Temps moyen d'execution du transaction en fonction du nombre de client}
+\end{figure}
 
 \subsubsection{Charge ciblant deux stores}
 \paragraph{}
