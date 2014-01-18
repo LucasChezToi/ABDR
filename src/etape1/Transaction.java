@@ -6,7 +6,6 @@ import java.util.List;
 
 import oracle.kv.Direction;
 import oracle.kv.KVStore;
-import oracle.kv.KVStoreConfig;
 import oracle.kv.Key;
 import oracle.kv.KeyValueVersion;
 import oracle.kv.Operation;

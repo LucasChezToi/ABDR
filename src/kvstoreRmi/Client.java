@@ -51,7 +51,7 @@ public class Client {
 	/*
 	 * peuple la base de maniere homogene
 	 */
-	private long peupler(IGateway gt,int nbProfiles){
+	public long peupler(IGateway gt,int nbProfiles){
 		long startTime,endTime;
 		startTime = System.currentTimeMillis();
 		try {

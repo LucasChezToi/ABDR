@@ -12,6 +12,9 @@ public class Main {
 		}
 		else {
 			int i, j;
+			Client client = new Client();
+			IGateway gateway = client.connectGateway(args[0], Integer.parseInt(args[1]));
+			client.peupler(gateway, 1000);
 			for(j = 1; j < CLIENT + 1; j++){
 				ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 				for(i = 0; i < j; i++){
