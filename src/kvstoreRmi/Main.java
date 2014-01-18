@@ -15,7 +15,6 @@ public class Main {
 			for(j = 1; j < CLIENT + 1; j++){
 				ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 				for(i = 0; i < j; i++){
-					System.out.println("Thread "+i+" created");
 					clients.add(new ClientThread(args[0], args[1], Boolean.getBoolean(args[2])));
 					clients.get(i).start();
 				}
@@ -26,7 +25,7 @@ public class Main {
 						e.printStackTrace();
 					}
 				}
-				System.out.println(TimeStamp.get());
+				System.out.println(j+" "+TimeStamp.get());
 			}
 		}
 	}
