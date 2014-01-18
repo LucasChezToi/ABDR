@@ -13,7 +13,7 @@ public class Client {
 	/*
 	 * Connecte le client au Gateway
 	 */
-	public static IGateway connectGateway(String ip,int port){
+	public IGateway connectGateway(String ip,int port){
 		Registry registry;
 		IGateway gt = null;
 		try {
@@ -30,28 +30,28 @@ public class Client {
 	 * sur un profile particulier
 	 */
 
-	public static void etape1(IGateway gt,int nbProfils, boolean migrate){
-		long startTime,endTime,total=0;
+	public void etape1(IGateway gt,int nbProfils, boolean migrate){
+		long startTime,endTime = 0,total=0;
 		int t=0;
 		try {
-			while(total < 30){
+			while(total < 30000){
 				startTime = System.currentTimeMillis();
 				gt.comit((t*2)%nbProfils, migrate);
-				endTime =  System.currentTimeMillis();
-				total += (endTime-startTime)/1000;
-				//System.out.println(t+" "+(endTime-startTime));
+				endTime = System.currentTimeMillis();
+				total += endTime - startTime;
 				t++;
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		System.out.println("moyene = "+(total/t));
+		if(t == 0) t=1;
+		System.out.println("moyenne = "+(total/t));
 	}
 
 	/*
 	 * peuple la base de maniere homogene
 	 */
-	private static long peupler(IGateway gt,int nbProfiles){
+	private long peupler(IGateway gt,int nbProfiles){
 		long startTime,endTime;
 		startTime = System.currentTimeMillis();
 		try {
@@ -72,7 +72,7 @@ public class Client {
 	/*
 	 * affiche tous les objets/attributs d'un profile
 	 */
-	private static long afficher(IGateway gt,int profile){
+	private long afficher(IGateway gt,int profile){
 		long startTime,endTime;
 		startTime = System.currentTimeMillis();
 		try {
@@ -87,7 +87,7 @@ public class Client {
 	/*
 	 * affiche le nombre d'objets d'un profile
 	 */
-	private static long affichernbObjets(IGateway gt,int profile){
+	private long affichernbObjets(IGateway gt,int profile){
 		long startTime,endTime;
 		startTime = System.currentTimeMillis();
 		try {
@@ -102,7 +102,7 @@ public class Client {
 	/*
 	 * fait une transaction sur le profile
 	 */
-	private static long add(IGateway gt, int profile){
+	private long add(IGateway gt, int profile){
 		long startTime,endTime;
 		startTime = System.currentTimeMillis();
 		try {
@@ -117,7 +117,7 @@ public class Client {
 	/*
 	 * fait une transaction sur plusieurs profiles
 	 */
-	private static long addMultyCle(IGateway gt, int[] profiles){
+	private long addMultyCle(IGateway gt, int[] profiles){
 		long startTime,endTime;
 		startTime = System.currentTimeMillis();
 		try {
@@ -132,7 +132,7 @@ public class Client {
 	/*
 	 * supprime un profile et tous ses objets
 	 */
-	private static long delete(IGateway gt, int profile){
+	private long delete(IGateway gt, int profile){
 		long startTime,endTime;
 		startTime = System.currentTimeMillis();
 
@@ -149,7 +149,7 @@ public class Client {
 	 * produit en boucle des transaction sur une period de temps time
 	 * et sur un nombre de profiles nbProfils
 	 */
-	private static long producteur(int time,IGateway gt,int nbProfils) {
+	private long producteur(int time,IGateway gt,int nbProfils) {
 		//commit en boucle pendant 10seconde sur un profil particulier
 		long startTime,endTime,total=0;
 		try {
@@ -173,7 +173,7 @@ public class Client {
 	 * consomme en boucle des profiles sur une period de temps time
 	 * et sur un nombre de profiles nbProfils
 	 */
-	private static long consommateur(int time,IGateway gt,int nbProfils) {
+	private long consommateur(int time,IGateway gt,int nbProfils) {
 		//commit en boucle pendant 10seconde sur un profil particulier
 		long startTime,endTime,total=0;
 		try {
@@ -203,13 +203,13 @@ public class Client {
 			System.out.println("exemple d'appel : 192.168.1.31 49999");
 		}
 		System.out.println("Client : ipGateway="+argv[0]+" portGateway="+argv[1]);
-		
+		Client client = new Client();
 		BufferedReader myReader = new BufferedReader( new InputStreamReader( System.in) );
 		Action action = null;
 		int arguments[] = null;
 		int valueArg=0;
 		long time;
-		IGateway gt = connectGateway(argv[0], Integer.parseInt(argv[1]));
+		IGateway gt = client.connectGateway(argv[0], Integer.parseInt(argv[1]));
 
 		while(true){
 			try {
@@ -243,7 +243,7 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					time = peupler(gt, valueArg);
+					time = client.peupler(gt, valueArg);
 					System.out.println("peupler : ok en "+time+" ms");
 					break;
 
@@ -254,17 +254,17 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					time = afficher(gt,valueArg);
+					time = client.afficher(gt,valueArg);
 					System.out.println("affichage fait en en "+time+" ms");
 					break;
 
 				case producteur:
-					time = producteur(60000,gt,200);
+					time = client.producteur(60000,gt,200);
 					System.out.println("le producteur à tourné "+time+" ms");
 					break;
 
 				case consomateur:
-					time = consommateur(60000,gt,200);
+					time = client.consommateur(60000,gt,200);
 					System.out.println("le consomateur à tourné "+time+" ms");
 					break;
 
@@ -275,7 +275,7 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					time = affichernbObjets(gt,valueArg);
+					time = client.affichernbObjets(gt,valueArg);
 					System.out.println("affichage fait en en "+time+" ms");
 					break;
 
@@ -287,7 +287,7 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					etape1(gt,valueArg, false);
+					client.etape1(gt,valueArg, false);
 					System.out.println("etape1 : ok");
 					break;
 
@@ -299,7 +299,7 @@ public class Client {
 					}else{
 						valueArg = arguments[0];
 					}
-					time = add(gt,valueArg);
+					time = client.add(gt,valueArg);
 					System.out.println("ajouter : le profile à été augmenté en "+time+" ms");
 					break;
 
@@ -318,7 +318,7 @@ public class Client {
 
 					}
 
-					time = addMultyCle(gt,profiles);
+					time = client.addMultyCle(gt,profiles);
 					System.out.println("ajouter : les profiles ont été augmentés en "+time+" ms");
 					break;
 
@@ -331,7 +331,7 @@ public class Client {
 						valueArg = arguments[0];
 					}
 
-					time = delete(gt, valueArg);
+					time = client.delete(gt, valueArg);
 					if(time ==-1){
 						System.out.println("le profile"+valueArg+" n'existe pas");
 					}else{

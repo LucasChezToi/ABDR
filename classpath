@@ -1,5 +1,5 @@
 here=`pwd`
-
+CLASSPATH=""
 for p in $here/lib/*.jar
 do
   export CLASSPATH=$CLASSPATH:$p

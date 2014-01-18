@@ -12,8 +12,9 @@ public class Main {
 			int i;
 			ArrayList<ClientThread> threads = new ArrayList<ClientThread>();
 			for(i = 0; i < 10; i++){
+				System.out.println("Thread "+i+" created");
 				threads.add(new ClientThread(args[0], args[1], Boolean.getBoolean(args[2])));
-				threads.get(i).run();
+				threads.get(i).start();
 			}
 		}
 	}
