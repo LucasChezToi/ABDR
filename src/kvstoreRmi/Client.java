@@ -30,7 +30,7 @@ public class Client {
 	 * sur un profile particulier
 	 */
 
-	public long etape1(IGateway gt,int nbProfils, boolean migrate){
+	public long etape1(IGateway gt,int nbProfils,int startProfil, boolean migrate){
 		long startTime,endTime = 0,total=0;
 		int t=0;
 		try {
@@ -117,7 +117,7 @@ public class Client {
 	/*
 	 * fait une transaction sur plusieurs profiles
 	 */
-	private long addMultyCle(IGateway gt, int[] profiles){
+	public long addMultyCle(IGateway gt, int[] profiles){
 		long startTime,endTime;
 		startTime = System.currentTimeMillis();
 		try {
@@ -152,6 +152,7 @@ public class Client {
 	private long producteur(int time,IGateway gt,int nbProfils) {
 		//commit en boucle pendant 10seconde sur un profil particulier
 		long startTime,endTime,total=0;
+		int t=0;
 		try {
 			while(total < time){
 				startTime = System.currentTimeMillis();
@@ -166,7 +167,7 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return total;
+		return (total/t);
 	}
 	
 	/*
@@ -176,8 +177,10 @@ public class Client {
 	private long consommateur(int time,IGateway gt,int nbProfils) {
 		//commit en boucle pendant 10seconde sur un profil particulier
 		long startTime,endTime,total=0;
+		int t=0;
 		try {
 			while(total < time){
+				t++;
 				startTime = System.currentTimeMillis();
 				for(int i=0;i<nbProfils;i++){
 					gt.delete(i);
@@ -190,7 +193,7 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return total;
+		return (total/t);
 	}
 
 	private enum Action {
@@ -201,6 +204,7 @@ public class Client {
 		if(argv.length!=2){
 			System.out.println("exemple d'appel : ipGateway portGateway");
 			System.out.println("exemple d'appel : 192.168.1.31 49999");
+			return;
 		}
 		System.out.println("Client : ipGateway="+argv[0]+" portGateway="+argv[1]);
 		Client client = new Client();
@@ -281,13 +285,17 @@ public class Client {
 
 
 				case etape1:
-					if(arguments==null){
-						System.out.println("etape1 : saisir le nombre de profils à surcharger");
+					int fprofil;
+					if(arguments.length<2){
+						System.out.println("etape1 : saisir le nombre de profils des KVStore");
 						valueArg= Integer.parseInt(myReader.readLine().split(" ")[0]);
+						System.out.println("etape1 : saisir le 1er profils à surcharger");
+						fprofil= Integer.parseInt(myReader.readLine().split(" ")[0]);
 					}else{
 						valueArg = arguments[0];
+						fprofil = arguments[1];						
 					}
-					client.etape1(gt,valueArg, false);
+					client.etape1(gt,valueArg,fprofil, false);
 					System.out.println("etape1 : ok");
 					break;
 

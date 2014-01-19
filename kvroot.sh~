@@ -9,8 +9,6 @@ then
     echo
     exit 1	
 else
-	echo "Suppression des anciens KVStore\n";
-	rm /tmp/kvroot* -r
     for i in `seq 0 $(($1 - 1))`;
     do
 	echo "Serveur$i 5555$((($i * 2)+3)) kvstore$i $2 500$(($i * 2))\n";
@@ -27,7 +25,7 @@ else
     sleep 1
     echo "Press enter to continue once the Server(s) is/are ready"
     read a
-    java -cp "$CLASSPATH" kvstoreRmi.Gateway $2 49999 $1 &
+    java -cp "$CLASSPATH" kvstoreRmi.Gateway localhost 49999 $1 &
     sleep 1
 fi
 
